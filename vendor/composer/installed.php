@@ -5,7 +5,7 @@
         'type' => 'library',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
-        'reference' => '713360d0cd4b4c0f39c31f7c3cd25b72b8fe4861',
+        'reference' => '7e13f6920ade1aafde7b9d82b394004ee06fea33',
         'name' => 'gamboa.martin/easybot',
         'dev' => true,
     ),
@@ -97,7 +97,7 @@
             'type' => 'library',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),
-            'reference' => '713360d0cd4b4c0f39c31f7c3cd25b72b8fe4861',
+            'reference' => '7e13f6920ade1aafde7b9d82b394004ee06fea33',
             'dev_requirement' => false,
         ),
         'gamboa.martin/encripta' => array(
