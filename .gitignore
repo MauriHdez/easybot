@@ -45,11 +45,9 @@ Thumbs.db
 *.mov
 *.wmv
 
-composer.lock
 config/database.php
 config/generales.php
 config/views.php
-vendor
 archivos
 .phpunit.result.cache
 

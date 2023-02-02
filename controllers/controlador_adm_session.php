@@ -6,7 +6,7 @@
  * @final En proceso
  *
  */
-namespace gamboamartin\cat_sat\controllers;
+namespace gamboamartin\easybot\controllers;
 
 use config\generales;
 use gamboamartin\errores\errores;

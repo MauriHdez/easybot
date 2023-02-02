@@ -11,10 +11,10 @@
 
     "autoload": {
       "psr-4": {
-        "gamboa.martin\\easybot\\controllers\\": "controllers",
-        "gamboa.martin\\easybot\\models\\": "orm",
+        "gamboamartin\\easybot\\controllers\\": "controllers",
+        "gamboamartin\\easybot\\models\\": "orm",
         "config\\": "config/",
-        "gamboa.martin\\easybot\\tests\\": "tests",
+        "gamboamartin\\easybot\\tests\\": "tests",
         "links\\": "links/",
         "html\\": "templates/directivas/"
 

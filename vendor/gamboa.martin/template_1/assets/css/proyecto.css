@@ -1,0 +1,69 @@
+.btn-modifica {
+    margin-left: 15px;
+}
+
+.btn-alta {
+    margin-left: 15px;
+}
+
+.selectpicker-primary {
+    padding-top: 0 !important;
+    padding-bottom: 10px !important;
+    border: 0 !important;
+}
+
+.dataTables_filter input {
+    border: 1px solid gray;
+    border-radius: 5px;
+    height: 30px;
+}
+
+.dataTables_filter input:focus {
+    border: 1px solid gray;
+    border-radius: 5px;
+    height: 30px;
+}
+
+div.dataTables_wrapper div.dataTables_length select {
+    width: auto;
+    display: inline-block;
+    height: 32px;
+    border: 1px solid;
+    border-radius: 5px;
+    background-color: #fff;
+}
+
+td.details-control {
+    background: url('https://www.datatables.net/examples/resources/details_open.png') no-repeat center center;
+    cursor: pointer;
+}
+
+tr.shown td.details-control {
+    background: url('https://www.datatables.net/examples/resources/details_close.png') no-repeat center center;
+}
+
+td.details-control1 {
+    background: url('https://www.datatables.net/examples/resources/details_open.png') no-repeat center center;
+    cursor: pointer;
+}
+
+tr.shown td.details-control1 {
+    background: url('https://www.datatables.net/examples/resources/details_close.png') no-repeat center center;
+}
+
+
+div.error {
+    border: 1px solid red !important;
+    display: none;
+    margin-top: 20px;
+    padding: 6px;
+}
+div.error>label {
+    display: block;
+    color: red;
+    font-size: 12px;
+    font-weight: normal;
+    margin-bottom: 2px !important;
+}
+
+
