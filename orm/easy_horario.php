@@ -23,6 +23,11 @@ class easy_horario extends _modelo_parent
 
     public function alta_bd(array $keys_integra_ds = array()): array|stdClass
     {
+        if(!isset($this->registro['descripcion'])){
+            $this->registro['descripcion'] = $this->registro['hora_inicio']."-".$this->registro['hora_fin']." ".
+                $this->registro['easy_dia_semana_id'];
+        }
+
         $this->registro = $this->campos_base(data: $this->registro, modelo: $this);
         if (errores::$error) {
             return $this->error->error(mensaje: 'Error al inicializar campo base', data: $this->registro);
@@ -38,16 +43,6 @@ class easy_horario extends _modelo_parent
             return $this->error->error(mensaje: 'Error al insertar grupo producto', data: $r_alta_bd);
         }
         return $r_alta_bd;
-    }
-
-    public function get_grupo(int $cat_sat_grupo_producto_id): array|stdClass
-    {
-        $registro = $this->registro(registro_id: $cat_sat_grupo_producto_id);
-        if (errores::$error) {
-            return $this->error->error(mensaje: 'Error al obtener grupo producto', data: $registro);
-        }
-
-        return $registro;
     }
 
     public function modifica_bd(array $registro, int $id, bool $reactiva = false, array $keys_integra_ds = array()): array|stdClass
