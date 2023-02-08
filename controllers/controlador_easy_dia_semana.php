@@ -12,6 +12,7 @@ use base\controller\controler;
 use base\controller\init;
 use gamboamartin\easybot\models\easy_dia_semana;
 use gamboamartin\easybot\models\easy_horario;
+use gamboamartin\easybot\models\easy_telegram;
 use gamboamartin\errores\errores;
 use gamboamartin\system\links_menu;
 use gamboamartin\system\out_permisos;
@@ -20,6 +21,7 @@ use gamboamartin\template\html;
 use gamboamartin\validacion\validacion;
 use html\easy_dia_semana_html;
 use html\easy_horario_html;
+use html\easy_telegram_html;
 use PDO;
 use stdClass;
 
