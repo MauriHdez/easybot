@@ -19,20 +19,22 @@ use gamboamartin\system\out_permisos;
 use gamboamartin\system\system;
 use gamboamartin\template\html;
 use gamboamartin\validacion\validacion;
+use html\easy_dia_semana_html;
 use html\easy_horario_html;
+use html\easy_telegram_html;
 use PDO;
 use stdClass;
 
-class controlador_easy_horario extends system {
+class controlador_easy_telegram extends system {
 
-    public controlador_easy_horario $controlador_easy_horario;
+    public controlador_easy_ $controltelegramador_easy_horario;
     public string $link_easy_horario_alta_bd = '';
 
     public function __construct(PDO      $link, html $html = new \gamboamartin\template_1\html(),
                                 stdClass $paths_conf = new stdClass())
     {
-        $modelo = new easy_horario(link: $link);
-        $html_ = new easy_horario_html(html: $html);
+        $modelo = new easy_telegram(link: $link);
+        $html_ = new easy_telegram_html(html: $html);
         $obj_link = new links_menu(link: $link, registro_id: $this->registro_id);
 
         $datatables = $this->init_datatable();
@@ -80,17 +82,9 @@ class controlador_easy_horario extends system {
         $keys_selects['codigo'] = new stdClass();
         $keys_selects['codigo']->cols = 4;
 
-        $keys_selects['hora_inicio'] = new stdClass();
-        $keys_selects['hora_inicio']->cols = 4;
-        $keys_selects['hora_inicio']->place_holder = 'Hora Inicio';
-
-        $keys_selects['hora_fin'] = new stdClass();
-        $keys_selects['hora_fin']->cols = 4;
-        $keys_selects['hora_fin']->place_holder = 'Hora Fin';
-
-        $keys_selects['easy_dia_semana_id'] = new stdClass();
-        $keys_selects['easy_dia_semana_id']->cols = 12;
-        $keys_selects['easy_dia_semana_id']->label = 'Dia Semana';
+        $keys_selects['descripcion'] = new stdClass();
+        $keys_selects['descripcion']->cols = 8;
+        $keys_selects['descripcion']->place_holder = 'Descripcion';
 
         $inputs = $this->inputs(keys_selects: $keys_selects);
         if(errores::$error){
@@ -137,11 +131,10 @@ class controlador_easy_horario extends system {
     protected function campos_view(): array
     {
         $keys = new stdClass();
-        $keys->inputs = array('codigo', 'hora_inicio', 'hora_fin');
+        $keys->inputs = array('codigo', 'descripcion');
         $keys->selects = array();
 
         $init_data = array();
-        $init_data['easy_dia_semana'] = "gamboamartin\\easybot";
 
         $campos_view = $this->campos_view_base(init_data: $init_data, keys: $keys);
         if (errores::$error) {
@@ -170,8 +163,8 @@ class controlador_easy_horario extends system {
 
     private function init_configuraciones(): controler
     {
-        $this->seccion_titulo = 'Horario';
-        $this->titulo_lista = 'Horario';
+        $this->seccion_titulo = 'Dia Semana';
+        $this->titulo_lista = 'Dia Semana';
 
         $this->path_vendor_views = 'gamboa.martin/easybot';
         $this->lista_get_data = true;
@@ -188,14 +181,11 @@ class controlador_easy_horario extends system {
 
     private function init_datatable(): stdClass
     {
-        $columns["easy_horario_id"]["titulo"] = "Id";
-        $columns["easy_horario_codigo"]["titulo"] = "Código";
-        $columns["easy_horario_hora_inicio"]["titulo"] = "Hora Inicio";
-        $columns["easy_horario_hora_fin"]["titulo"] = "Hora Fin";
+        $columns["easy_dia_semana_id"]["titulo"] = "Id";
+        $columns["easy_dia_semana_codigo"]["titulo"] = "Código";
         $columns["easy_dia_semana_descripcion"]["titulo"] = "Dia Semana";
 
-        $filtro = array("easy_horario.id", "easy_horario.codigo", "easy_horario.hora_inicio",
-            "easy_horario.hora_fin", "easy_dia_semana.descripcion");
+        $filtro = array("easy_dia_semana.id", "easy_dia_semana.codigo", "easy_dia_semana.descripcion");
 
         $datatables = new stdClass();
         $datatables->columns = $columns;
@@ -332,14 +322,14 @@ class controlador_easy_horario extends system {
 
     protected function key_selects_txt(array $keys_selects): array
     {
-        $keys_selects = (new init())->key_select_txt(cols: 6, key: 'codigo',
+        $keys_selects = (new init())->key_select_txt(cols: 4, key: 'codigo',
             keys_selects: $keys_selects, place_holder: 'Código');
         if (errores::$error) {
             return $this->errores->error(mensaje: 'Error al maquetar key_selects', data: $keys_selects);
         }
 
-        $keys_selects = (new init())->key_select_txt(cols: 12, key: 'descripcion',
-            keys_selects: $keys_selects, place_holder: 'Clase');
+        $keys_selects = (new init())->key_select_txt(cols: 8, key: 'descripcion',
+            keys_selects: $keys_selects, place_holder: 'Descripcion');
         if (errores::$error) {
             return $this->errores->error(mensaje: 'Error al maquetar key_selects', data: $keys_selects);
         }
@@ -378,9 +368,6 @@ class controlador_easy_horario extends system {
             return $this->retorno_error(mensaje: 'Error al inicializar selects', data: $keys_selects, header: $header,
                 ws: $ws);
         }
-
-        $keys_selects['easy_dia_semana_id']->id_selected = $this->registro['easy_dia_semana_id'];
-
 
         $base = $this->base_upd(keys_selects: $keys_selects, params: array(), params_ajustados: array());
         if (errores::$error) {
