@@ -14,7 +14,7 @@ class easy_telegram_html extends html_controler {
         $modelo = new easy_telegram($link);
 
         $select = $this->select_catalogo(cols:$cols,con_registros:$con_registros,id_selected:$id_selected,
-            modelo: $modelo,label: 'Dia Semana',required: true);
+            modelo: $modelo,label: 'Cita',required: true);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al generar select', data: $select);
         }

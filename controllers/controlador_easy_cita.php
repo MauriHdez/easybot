@@ -10,9 +10,6 @@ namespace gamboamartin\easybot\controllers;
 
 use base\controller\controler;
 use base\controller\init;
-use gamboamartin\easybot\models\easy_dia_semana;
-use gamboamartin\easybot\models\easy_horario;
-use gamboamartin\easybot\models\easy_telegram;
 use gamboamartin\easybot\models\easy_cita;
 use gamboamartin\errores\errores;
 use gamboamartin\system\links_menu;
@@ -21,12 +18,13 @@ use gamboamartin\system\system;
 use gamboamartin\template\html;
 use gamboamartin\validacion\validacion;
 use html\easy_cita_html;
+use html\easy_horario_html;
 use PDO;
 use stdClass;
 
 class controlador_easy_cita extends system {
 
-    public controlador_easy_cita $controlador_easy_horario;
+    public controlador_easy_cita $controlador_easy_cita;
     public string $link_easy_horario_alta_bd = '';
 
     public function __construct(PDO      $link, html $html = new \gamboamartin\template_1\html(),
@@ -189,14 +187,18 @@ class controlador_easy_cita extends system {
 
     private function init_datatable(): stdClass
     {
-        $columns["easy_horario_id"]["titulo"] = "Id";
-        $columns["easy_horario_codigo"]["titulo"] = "Código";
-        $columns["easy_horario_hora_inicio"]["titulo"] = "Hora Inicio";
-        $columns["easy_horario_hora_fin"]["titulo"] = "Hora Fin";
-        $columns["easy_dia_semana_descripcion"]["titulo"] = "Dia Semana";
+        $columns["easy_cliente_id"]["titulo"] = "Id";
+        $columns["easy_cliente_codigo"]["titulo"] = "Código";
+        $columns["easy_cliente_nombre"]["titulo"] = "Nombre";
+        $columns["easy_cliente_ap"]["titulo"] = "Apellido Paterno";
+        $columns["easy_cliente_am"]["titulo"] = "Apellido Materno";
+        $columns["easy_cliente_telefono"]["titulo"] = "Telefono";
+        $columns["easy_cliente_correo"]["titulo"] = "Correo";
+        $columns["easy_cliente_direccion"]["titulo"] = "Direccion";
+        $columns["adm_genero_descripcion"]["titulo"] = "Genero";
 
-        $filtro = array("easy_horario.id", "easy_horario.codigo", "easy_horario.hora_inicio",
-            "easy_horario.hora_fin", "easy_dia_semana.descripcion");
+        $filtro = array("easy_cliente.id", "easy_cliente.codigo", "easy_cliente.nombre",
+            "easy_cliente.ap", "easy_cliente.am", "easy_cliente.telefono","easy_cliente.correo");
 
         $datatables = new stdClass();
         $datatables->columns = $columns;
@@ -207,7 +209,7 @@ class controlador_easy_cita extends system {
 
     private function init_links(): array|string
     {
-        $this->link_easy_horario_alta_bd = $this->obj_link->link_alta_bd(link: $this->link, seccion: 'easy_horario');
+        $this->link_easy_horario_alta_bd = $this->obj_link->link_alta_bd(link: $this->link, seccion: 'easy_cliente');
         if (errores::$error) {
             $error = $this->errores->error(mensaje: 'Error al obtener link', data: $this->link_easy_horario_alta_bd);
             print_r($error);

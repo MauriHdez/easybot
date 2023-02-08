@@ -19,7 +19,6 @@ use gamboamartin\system\out_permisos;
 use gamboamartin\system\system;
 use gamboamartin\template\html;
 use gamboamartin\validacion\validacion;
-use html\easy_dia_semana_html;
 use html\easy_horario_html;
 use html\easy_telegram_html;
 use PDO;

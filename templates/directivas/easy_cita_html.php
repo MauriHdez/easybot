@@ -9,7 +9,7 @@ use stdClass;
 
 class easy_cita_html extends html_controler {
 
-    public function select_cat_sat_grupo_producto_id(int $cols,bool $con_registros,int $id_selected, PDO $link): array|string
+    public function select_easy_horario_id(int $cols,bool $con_registros,int $id_selected, PDO $link): array|string
     {
         $modelo = new easy_cita($link);
 
