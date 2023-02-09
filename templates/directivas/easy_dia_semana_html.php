@@ -7,7 +7,7 @@ use gamboamartin\system\html_controler;
 use PDO;
 use stdClass;
 
-class easy_status_cita_html extends html_controler {
+class easy_dia_semana_html extends html_controler {
 
     public function select_easy_dia_semana_id(int $cols,bool $con_registros,int $id_selected, PDO $link): array|string
     {
