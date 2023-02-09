@@ -1,20 +1,20 @@
 <?php
 namespace html;
 
-use gamboamartin\easybot\models\easy_horario;
+use gamboamartin\easybot\models\easy_cita_servicio;
 use gamboamartin\errores\errores;
 use gamboamartin\system\html_controler;
 use PDO;
 use stdClass;
 
-class easy_horario_html extends html_controler {
+class easy_cita_servicio_html extends html_controler {
 
     public function select_easy_horario_id(int $cols,bool $con_registros,int $id_selected, PDO $link): array|string
     {
-        $modelo = new easy_horario($link);
+        $modelo = new easy_cita_servicio($link);
 
         $select = $this->select_catalogo(cols:$cols,con_registros:$con_registros,id_selected:$id_selected,
-            modelo: $modelo,label: 'Servicio',required: true);
+            modelo: $modelo,label: 'Horario',required: true);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al generar select', data: $select);
         }
