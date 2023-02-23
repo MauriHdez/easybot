@@ -3,13 +3,17 @@
 namespace gamboamartin\easybot\models;
 
 use PDO;
+use stdClass;
 
 class bot
 {
-    public function __construct()
+    private $token;
+    private $website;
+
+    public function __construct($token, $website)
     {
-        $token = '5423352510:AAHJ86F7ru7OZHXG0E4joj89ji4DmZdMZFI';
-        $website = 'https://api.telegram.org/bot' . $token;
+        $this->token = $token;
+        $this->website = $website;
 
     }
 
@@ -21,7 +25,12 @@ class bot
         $chatId = $update['message']['chat']['id'];
         $message = $update['message']['text'];
 
-        $message(message: $message, chatId: $chatId);
+        $datos = new stdClass();
+
+        $datos->message = $message;
+        $datos->chatId = $chatId;
+
+        return $datos;
     }
 
     public function message($message, $chatId){
@@ -43,7 +52,7 @@ class bot
 
     public function sendMessage($chatId, $response)
     {
-        $url = $GLOBALS['website'] . '/sendMessage?chat_id=' . $chatId . '&parse_mode=HTML&text=' . urlencode($response);
+        $url = $this->website . '/sendMessage?chat_id=' . $chatId . '&parse_mode=HTML&text=' . urlencode($response);
         file_get_contents($url);
     }
 
