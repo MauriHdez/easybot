@@ -9,18 +9,19 @@ class bot
 {
     private $token;
     private $website;
+    private $input;
 
-    public function __construct($token, $website)
+    public function __construct($token, $website, $input)
     {
         $this->token = $token;
         $this->website = $website;
+        $this->input = $input;
 
     }
 
     public function get()
     {
-        $input = file_get_contents('php://input');
-        $update = json_decode($input, TRUE);
+        $update = json_decode($this->input, TRUE);
 
         $chatId = $update['message']['chat']['id'];
         $message = $update['message']['text'];
