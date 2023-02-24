@@ -1,4 +1,8 @@
 <?php
+
+use config\generales;
+
+
 $token = '5423352510:AAHJ86F7ru7OZHXG0E4joj89ji4DmZdMZFI';
 $website = 'https://api.telegram.org/bot'.$token;
 
@@ -31,6 +35,7 @@ function sendMessage($chatId, $response) {
 }
 
 function getResponse($message){
+    $generales = new generales();
     $json = '{
           "queryInput": {
             "text": {
@@ -47,7 +52,7 @@ function getResponse($message){
 
     curl_setopt($ch, CURLOPT_POST, 1);
     curl_setopt($ch, CURLOPT_POSTFIELDS, $json);
-    curl_setopt($ch, CURLOPT_HTTPHEADER, array('Authorization: Bearer $(gcloud auth print-access-token)', 'x-goog-user-project: easyacces-378204','Content-Type: application/json; charset=utf-8', ));
+    curl_setopt($ch, CURLOPT_HTTPHEADER, array('Authorization: Bearer '. $generales->google_auth, 'x-goog-user-project: easyacces-378204','Content-Type: application/json; charset=utf-8', ));
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
     $result = curl_exec($ch);
     curl_close($ch);
