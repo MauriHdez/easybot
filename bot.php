@@ -22,7 +22,7 @@ switch($message) {
         sendMessage($chatId, $response);
         break;
     default:
-        $response = getResponse(message: $message);
+        $response = getResponse(message: $message, chatId: $chatId);
         $response = json_decode($response)->queryResult->responseMessages[0]->text->text[0];
         sendMessage($chatId, $response);
         break;
@@ -33,7 +33,9 @@ function sendMessage($chatId, $response) {
     file_get_contents($url);
 }
 
-function getResponse($message){
+
+function getResponse($message, $chatId){
+    $generales = new generales();
     $json = '{
           "queryInput": {
             "text": {
@@ -42,7 +44,10 @@ function getResponse($message){
             "languageCode": "en"
           },
           "queryParams": {
-            "timeZone": "America/Los_Angeles"
+            "timeZone": "America/Los_Angeles",
+            "webhookHeaders": {
+                "chatid": "'. $chatId .'"
+            }
           }
         }';
 
