@@ -12,7 +12,7 @@ $json = '{
 	},
 }';
 
-echo json_encode($json);
+echo $json;
 /*function processMessage($update) {
     //if($update["result"]["action"] == "sayHello"){
         sendMessage(array(
