@@ -8,7 +8,7 @@ $json = '{
          {
             "text":{
                "text":[
-                  "'.$update.'"
+                  "'.$update['fulfillmentInfo']['tag'].$update['parameters']['number'].'"
                ]
             }
          }
