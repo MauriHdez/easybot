@@ -1,11 +1,11 @@
 <?php
 
 $json = '{
-	fulfillment_response:{
-		messages: [
+	"fulfillment_response":{
+		"messages": [
 			{
-				text: {
-					text: [message],
+				"text": {
+					"text": "en",
 				},
 			},
 		],
