@@ -44,7 +44,7 @@ $update = json_encode($update);
              {
                 "text":{
                    "text":[
-                      "'.$update.'"
+                      "'.$update['chatid'].'"
                    ]
                 }
              }
