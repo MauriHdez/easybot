@@ -1,5 +1,19 @@
 <?php
-function processMessage($update) {
+
+$json = '{
+	fulfillment_response:{
+		messages: [
+			{
+				text: {
+					text: [message],
+				},
+			},
+		],
+	},
+}';
+
+echo json_encode($json);
+/*function processMessage($update) {
     //if($update["result"]["action"] == "sayHello"){
         sendMessage(array(
             "source" => $update["result"]["source"],
@@ -18,4 +32,4 @@ $update_response = file_get_contents("php://input");
 $update = json_decode($update_response, true);
 //if (isset($update["result"]["action"])) {
     processMessage($update);
-//}
+//}*/
