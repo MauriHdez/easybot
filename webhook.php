@@ -1,14 +1,14 @@
 <?php
 $update_response = file_get_contents("php://input");
 $update = json_decode($update_response, true);
-$update = json_encode($update);
+//$update = json_encode($update);
 $json = '{
    "fulfillmentResponse":{
       "messages":[
          {
             "text":{
                "text":[
-                  "'.$update['fulfillmentInfo']['tag'].'"
+                  "'.$update['fulfillmentInfo']['tag'].$update['parameters']['number'].'"
                ]
             }
          }
