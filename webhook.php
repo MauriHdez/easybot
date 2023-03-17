@@ -1,20 +1,22 @@
 <?php
 
-/*$json = '{
-	"fulfillment_response":{
-		"messages": [
-			{
-				"text": {
-					"text": "en",
-				},
-			},
-		],
-	},
+$json = '{
+   "fulfillmentResponse":{
+      "messages":[
+         {
+            "text":{
+               "text":[
+                  "Hello World"
+               ]
+            }
+         }
+      ]
+   }
 }';
 
-echo $json;*/
-$parameters = array("fulfillment_response" => array("messages" => array("text"=>array("text"=>"en"))));
-echo json_encode($parameters);
+echo $json;
+/*$parameters = array("fulfillment_response" => array("messages" => array("text"=>array("text"=>"en"))));
+echo json_encode($parameters);*/
 /*function processMessage($update) {
     //if($update["result"]["action"] == "sayHello"){
         sendMessage(array(
