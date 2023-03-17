@@ -24,7 +24,7 @@ function processMessage($update) {
                  {
                     "text":{
                        "text":[
-                          "'.$update['fulfillmentInfo']['tag'].$update['sessionInfo']['parameters']['number'].'"
+                          "'.$update['fulfillmentInfo']['tag'].'"
                        ]
                     }
                  }
@@ -37,4 +37,18 @@ function processMessage($update) {
 
 $update_response = file_get_contents("php://input");
 $update = json_decode($update_response, true);
-processMessage($update);
+    $json = '{
+       "fulfillmentResponse":{
+          "messages":[
+             {
+                "text":{
+                   "text":[
+                      "'.$update['sessionInfo']['parameters']['chatid'].'"
+                   ]
+                }
+             }
+          ]
+       }
+    }';
+echo $json;
+//processMessage($update);
