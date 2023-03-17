@@ -1,6 +1,6 @@
 <?php
 
-$json = '{
+/*$json = '{
 	"fulfillment_response":{
 		"messages": [
 			{
@@ -12,7 +12,9 @@ $json = '{
 	},
 }';
 
-echo $json;
+echo $json;*/
+$parameters = array("fulfillment_response" => array("messages" => array("text"=>array("text"=>"en"))));
+echo json_encode($parameters);
 /*function processMessage($update) {
     //if($update["result"]["action"] == "sayHello"){
         sendMessage(array(
