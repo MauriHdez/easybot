@@ -1,5 +1,5 @@
 <?php
-
+$update_response = file_get_contents("php://input");
 $json = '{
    "fulfillmentResponse":{
       "messages":[
@@ -14,7 +14,7 @@ $json = '{
    }
 }';
 
-echo $json;
+echo $update_response;
 /*$parameters = array("fulfillment_response" => array("messages" => array("text"=>array("text"=>"en"))));
 echo json_encode($parameters);*/
 /*function processMessage($update) {
