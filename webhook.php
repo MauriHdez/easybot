@@ -7,7 +7,7 @@ $json = '{
          {
             "text":{
                "text":[
-                  "'.$update["result"]["action"].'"
+                  "Hello World"
                ]
             }
          }
