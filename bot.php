@@ -1,6 +1,8 @@
 <?php
 
 
+use config\generales;
+
 $token = '5423352510:AAHJ86F7ru7OZHXG0E4joj89ji4DmZdMZFI';
 $website = 'https://api.telegram.org/bot'.$token;
 
@@ -43,7 +45,7 @@ function getResponse($message, $chatId){
             },
             "languageCode": "en"
           },
-          "queryParams": {
+          "QueryParameters": {
             "timeZone": "America/Los_Angeles",
             "webhookHeaders": {
                 "chatid": "'. $chatId .'"
