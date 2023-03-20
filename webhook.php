@@ -43,7 +43,7 @@ $update = json_decode($update_response, true);
           "messages":[
              {
                 "text":{
-                   "text":
+                   "text":[
                       "'.$update['fulfillmentInfo']['tag'].'"
                    ]
                 }
