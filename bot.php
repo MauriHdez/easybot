@@ -45,7 +45,7 @@ function getResponse($message, $chatId){
             },
             "languageCode": "en"
           },
-          "QueryParameters": {
+          "queryParameters": {
             "timeZone": "America/Los_Angeles",
             "webhookHeaders": {
                 "chatid": "'. $chatId .'"
