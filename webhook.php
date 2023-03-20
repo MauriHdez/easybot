@@ -44,7 +44,7 @@ $update = json_decode($update_response, true);
              {
                 "text":{
                    "text":[
-                      "'.$update['chatid'].'"
+                      "'.$update['parameters']['chatid'].'"
                    ]
                 }
              }
