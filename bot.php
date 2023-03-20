@@ -35,7 +35,7 @@ function sendMessage($chatId, $response) {
 
 
 function getResponse($message, $chatId){
-    $generales = new generales();
+    //$generales = new generales();
     $json = '{
           "queryInput": {
             "text": {
@@ -55,7 +55,7 @@ function getResponse($message, $chatId){
 
     curl_setopt($ch, CURLOPT_POST, 1);
     curl_setopt($ch, CURLOPT_POSTFIELDS, $json);
-    curl_setopt($ch, CURLOPT_HTTPHEADER, array('Authorization: Bearer ya29.a0AVvZVsrbxw2AkYJmc9Ksrfon24-NeBjR7STeDkMvNcVEOUnp9ST8OJqG9XJsCJTwfFu37oQv6fJmd3WYX2remY8yiDXd5TLzccqE8b8XvTf5ZP41SOQ461PDTeMAzJiu8j1yX2GB-oGelEOIcJQYeArRKubZ7WF1I7ngjgaCgYKAcYSAQASFQGbdwaIMJQ8Gu-VnzhvIkllErZK_g0173', 'x-goog-user-project: easyacces-378204','Content-Type: application/json; charset=utf-8', ));
+    curl_setopt($ch, CURLOPT_HTTPHEADER, array('Authorization: Bearer ya29.a0AVvZVsp6CPMisEbv8Ej68wM-sTPIsmqScNRRNF5KqtW--vwq5_qkC4Y4LuyW8BWvKVOCi0cPTTa8M7ZFnmHG0DyRP9H5Wdf2QD-v1C1SovEv1g7OwSrovttkGvPee5vfhY_7ldSfMaYY4sZqAiB_D-FJcEWafDhfPtRUzHcaCgYKAUUSARESFQGbdwaIs3ab3LdZibn1GOvL4muqNA0174', 'x-goog-user-project: easyacces-378204','Content-Type: application/json; charset=utf-8', ));
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
     $result = curl_exec($ch);
     curl_close($ch);
