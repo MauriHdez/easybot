@@ -43,6 +43,20 @@ $update = json_decode($update_response, true);
           "messages":[
              {
                 "text":{
+                   "text":
+                      "'.$update['fulfillmentInfo']['tag'].'"
+                   ]
+                }
+             }
+          ]
+       }
+    }';
+
+    /*$json = '{
+       "fulfillmentResponse":{
+          "messages":[
+             {
+                "text":{
                    "text":[
                       "'.$update['parameters']['chatid'].'"
                    ]
@@ -50,6 +64,6 @@ $update = json_decode($update_response, true);
              }
           ]
        }
-    }';
+    }';*/
 echo $json;
 //processMessage($update);
