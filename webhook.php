@@ -37,8 +37,9 @@ function processMessage($update) {
 
 $update_response = file_get_contents("php://input");
 $update = json_decode($update_response, true);
-//$update = json_encode($update);
-    $json = '{
+$update = json_encode($update);
+    $json = '{fulfillmentText: "'.$update.'"}';
+   /* $json = '{
        "fulfillmentResponse":{
           "messages":[
              {
@@ -50,6 +51,6 @@ $update = json_decode($update_response, true);
              }
           ]
        }
-    }';
+    }';*/
 echo $json;
 //processMessage($update);
