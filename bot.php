@@ -35,7 +35,7 @@ switch($message) {
         $respuesta = json_decode($response);
         $response = $respuesta->queryResult->responseMessages[0]->text->text[0];
         $resultado = acciones_bd($respuesta, $link);
-        $response .= $response.$resultado;
+        $response = $response.$resultado;
         sendMessage($chatId, $response);
         break;
 }
