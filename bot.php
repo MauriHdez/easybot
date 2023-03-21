@@ -17,8 +17,13 @@ $website = 'https://api.telegram.org/bot'.$token;
 $input = file_get_contents('php://input');
 $update = json_decode($input, TRUE);
 
+/*
 $chatId = $update['message']['chat']['id'];
 $message = $update['message']['text'];
+*/
+$chatId = '5655914615';
+$message = 'Hola';
+
 
 switch($message) {
     case '/start':
@@ -69,8 +74,8 @@ function getResponse($message){
     return $result;
 }
 
-function acciones_bd($repuesta, $link){
-    if($repuesta->queryResult->intent->displayName = "servicios"){
+function acciones_bd($respuesta, $link){
+    if($respuesta->queryResult->intent->displayName === "servicios"){
         $servicios = (new easy_servicio($link))->registros_activos();
         if(errores::$error){
             $error = (new errores())->error(mensaje: 'Error obtener registros',data:  $servicios);
@@ -85,7 +90,7 @@ function acciones_bd($repuesta, $link){
 
         return $text_servicios;
     }
-    return "default";
+    return "";
 }
 
 ?>
