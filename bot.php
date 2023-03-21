@@ -1,5 +1,7 @@
 <?php
 
+require "init.php";
+require 'vendor/autoload.php';
 
 use base\conexion;
 use config\generales;
