@@ -17,13 +17,8 @@ $website = 'https://api.telegram.org/bot'.$token;
 $input = file_get_contents('php://input');
 $update = json_decode($input, TRUE);
 
-/*
 $chatId = $update['message']['chat']['id'];
 $message = $update['message']['text'];
-*/
-$chatId = '5655914615';
-$message = 'agendar una cita';
-
 
 switch($message) {
     case '/start':
@@ -85,7 +80,7 @@ function acciones_bd($repuesta, $link){
 
         $text_servicios = '';
         foreach ($servicios as $servicio){
-            $text_servicios = "     -".$servicio['easy_servicio_nombre']."\n";
+            $text_servicios = "     - ".$servicio['easy_servicio_nombre']."\n";
         }
 
         return $text_servicios;
