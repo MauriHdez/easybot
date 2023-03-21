@@ -33,9 +33,10 @@ switch($message) {
     default:
         $response = getResponse(message: $message);
         $respuesta = json_decode($response);
-        $response = $respuesta->queryResult->responseMessages[0]->text->text[0];
-        $resultado = acciones_bd($respuesta, $link);
-        $response = $response.$resultado;
+        //$response = $respuesta->queryResult->responseMessages[0]->text->text[0];
+        $response = $chatId;
+        //$resultado = acciones_bd($respuesta, $link);
+        //$response = $response.$resultado;
         sendMessage($chatId, $response);
         break;
 }
@@ -79,7 +80,7 @@ function acciones_bd($repuesta, $link){
             print_r($error);
             die('Error');
         }
-
+        print_r($servicios);exit;
         $text_servicios = '';
         foreach ($servicios as $servicio){
             $text_servicios = $servicio['easy_servicio_nombre'];
