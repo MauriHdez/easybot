@@ -11,8 +11,8 @@ class easy_servicio extends _modelo_parent
 {
     public function __construct(PDO $link)
     {
-        $tabla = 'easy_horario';
-        $columnas = array($tabla => false, "easy_dia_semana" => $tabla);
+        $tabla = 'easy_servicio';
+        $columnas = array($tabla => false);
         $campos_obligatorios[] = 'descripcion';
 
         parent::__construct(link: $link, tabla: $tabla, campos_obligatorios: $campos_obligatorios,
