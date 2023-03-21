@@ -24,8 +24,10 @@ switch($message) {
         sendMessage($chatId, $response);
         break;
     default:
-        $response = getResponse(message: $message, chatId: $chatId);
-        $response = json_decode($response)->queryResult->responseMessages[0]->text->text[0];
+        $response = getResponse(message: $message);
+        $respuesta = json_decode($response);
+        $response = acciones_bd($respuesta);
+        //$response = $respuesta->queryResult->responseMessages[0]->text->text[0];
         sendMessage($chatId, $response);
         break;
 }
@@ -36,7 +38,7 @@ function sendMessage($chatId, $response) {
 }
 
 
-function getResponse($message, $chatId){
+function getResponse($message){
     //$generales = new generales();
     $json = '{
           "queryInput": {
@@ -47,9 +49,6 @@ function getResponse($message, $chatId){
           },
           "queryParameters": {
             "timeZone": "America/Los_Angeles",
-            "webhookHeaders": {
-                "chatid": "'. $chatId .'"
-            }
           }
         }';
 
@@ -64,5 +63,11 @@ function getResponse($message, $chatId){
     return $result;
 }
 
+function acciones_bd($repuesta){
+    if($repuesta->queryResult->intent->displayName = "servicios"){
+        return $repuesta->queryResult->intent->displayName;
+    }
+    return "default";
+}
 
 ?>
