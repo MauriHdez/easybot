@@ -22,7 +22,7 @@ $chatId = $update['message']['chat']['id'];
 $message = $update['message']['text'];
 /*
 $chatId = '5655914615';
-$message = 'Hola';
+$message = 'Me gustaria agendar una cita';
 */
 
 switch($message) {
@@ -37,9 +37,14 @@ switch($message) {
     default:
         $response = getResponse(message: $message);
         $respuesta = json_decode($response);
+
+        //Respuesta normal de dialogflow
         $response = $respuesta->queryResult->responseMessages[0]->text->text[0];
+
+        //Acciones de base de datos
         $resultado = acciones_bd($respuesta, $link);
         $response = $response."\n".$resultado;
+
         sendMessage($chatId, $response);
         break;
 }
@@ -67,7 +72,7 @@ function getResponse($message){
 
     curl_setopt($ch, CURLOPT_POST, 1);
     curl_setopt($ch, CURLOPT_POSTFIELDS, $json);
-    curl_setopt($ch, CURLOPT_HTTPHEADER, array('Authorization: Bearer ya29.a0AVvZVsp-Vp1zP6B4cVH-HytLplpsxHPNeENgHqWJhP04loncPGVLfyyx68DVfJESHUiZm7UmE1WHik9b4-4-CQiqbkV7ZwfECsh28uxMukXVJTUHJMRjTlK_227Ix2zlKtgrnWtHRKyPOrn4Lh_ds2TcG7IucihoRO1E0ToaCgYKATESARESFQGbdwaIWYaBrcztQJLyOzkwsOtvWw0174', 'x-goog-user-project: easyacces-378204','Content-Type: application/json; charset=utf-8', ));
+    curl_setopt($ch, CURLOPT_HTTPHEADER, array('Authorization: Bearer ya29.a0AVvZVsqbN23izJeO-PKSCwUEDP9p7vIoPR17DltmREnnqyUKV9FX7h30EI8FLx9l3biGd2PqCfWEWUj8SbqWo88WJRH3gePS_d3qZXHu9xAzr6LfnXohy3W-LR1ubDa5EGIUspG5VZ7-9ButkwZkiUQj0XsBib1grke9YtIaCgYKAbASARESFQGbdwaI_IAVL9UjbN0Pr5YlhWmd2w0174', 'x-goog-user-project: easyacces-378204','Content-Type: application/json; charset=utf-8', ));
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
     $result = curl_exec($ch);
     curl_close($ch);
@@ -75,7 +80,10 @@ function getResponse($message){
 }
 
 function acciones_bd($respuesta, $link){
-    if($respuesta->queryResult->intent->displayName === "servicios"){
+    /*
+     * $respuesta->queryResult->intent->displayName  =  intento
+     * */
+    if($respuesta->queryResult->currentPage->displayName === "servicios"){
         $servicios = (new easy_servicio($link))->registros_activos();
         if(errores::$error){
             $error = (new errores())->error(mensaje: 'Error obtener registros',data:  $servicios);
