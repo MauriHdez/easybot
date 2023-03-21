@@ -80,7 +80,7 @@ function acciones_bd($repuesta, $link){
 
         $text_servicios = '';
         foreach ($servicios as $servicio){
-            $text_servicios = $servicio['easy_servicio_descripcion'];
+            $text_servicios = $servicio['easy_servicio_nombre'];
         }
 
         return $text_servicios;
