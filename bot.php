@@ -20,9 +20,10 @@ $update = json_decode($input, TRUE);
 
 $chatId = $update['message']['chat']['id'];
 $message = $update['message']['text'];
+
 /*
 $chatId = '5655914615';
-$message = 'Me gustaria agendar una cita';
+$message = 'Agendar';
 */
 
 switch($message) {
@@ -83,7 +84,8 @@ function acciones_bd($respuesta, $link){
     /*
      * $respuesta->queryResult->intent->displayName  =  intento
      * */
-    if($respuesta->queryResult->currentPage->displayName === "servicios"){
+
+    if($respuesta->queryResult->intent->displayName === "agendar.cita"){
         $servicios = (new easy_servicio($link))->registros_activos();
         if(errores::$error){
             $error = (new errores())->error(mensaje: 'Error obtener registros',data:  $servicios);
