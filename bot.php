@@ -26,8 +26,8 @@ switch($message) {
     default:
         $response = getResponse(message: $message);
         $respuesta = json_decode($response);
-        $response = acciones_bd($respuesta);
-        //$response = $respuesta->queryResult->responseMessages[0]->text->text[0];
+        $response = $respuesta->queryResult->responseMessages[0]->text->text[0];
+        $resultado = acciones_bd($respuesta);
         sendMessage($chatId, $response);
         break;
 }
