@@ -17,8 +17,12 @@ $website = 'https://api.telegram.org/bot'.$token;
 $input = file_get_contents('php://input');
 $update = json_decode($input, TRUE);
 
+/*
 $chatId = $update['message']['chat']['id'];
 $message = $update['message']['text'];
+*/
+$chatId = '5655914615';
+$message = 'agendar una cita';
 
 
 switch($message) {
@@ -33,9 +37,8 @@ switch($message) {
     default:
         $response = getResponse(message: $message);
         $respuesta = json_decode($response);
-        //$response = $respuesta->queryResult->responseMessages[0]->text->text[0];
-        $response = $chatId;
-        //$resultado = acciones_bd($respuesta, $link);
+        $response = $respuesta->queryResult->responseMessages[0]->text->text[0];
+        $resultado = acciones_bd($respuesta, $link);
         //$response = $response.$resultado;
         sendMessage($chatId, $response);
         break;
@@ -48,7 +51,6 @@ function sendMessage($chatId, $response) {
 
 
 function getResponse($message){
-    //$generales = new generales();
     $json = '{
           "queryInput": {
             "text": {
