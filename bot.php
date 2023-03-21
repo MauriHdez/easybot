@@ -1,11 +1,16 @@
 <?php
 
 
+use base\conexion;
 use config\generales;
+use gamboamartin\easybot\models\easy_servicio;
+use gamboamartin\errores\errores;
+
+$con = new conexion();
+$link = conexion::$link;
 
 $token = '5423352510:AAHJ86F7ru7OZHXG0E4joj89ji4DmZdMZFI';
 $website = 'https://api.telegram.org/bot'.$token;
-
 
 $input = file_get_contents('php://input');
 $update = json_decode($input, TRUE);
@@ -27,7 +32,8 @@ switch($message) {
         $response = getResponse(message: $message);
         $respuesta = json_decode($response);
         $response = $respuesta->queryResult->responseMessages[0]->text->text[0];
-        $resultado = acciones_bd($respuesta);
+        $resultado = acciones_bd($respuesta, $link);
+        $response .= $response.$resultado;
         sendMessage($chatId, $response);
         break;
 }
@@ -63,9 +69,21 @@ function getResponse($message){
     return $result;
 }
 
-function acciones_bd($repuesta){
+function acciones_bd($repuesta, $link){
     if($repuesta->queryResult->intent->displayName = "servicios"){
-        return $repuesta->queryResult->intent->displayName;
+        $servicios = (new easy_servicio($link))->registros_activos();
+        if(errores::$error){
+            $error = (new errores())->error(mensaje: 'Error obtener registros',data:  $servicios);
+            print_r($error);
+            die('Error');
+        }
+
+        $text_servicios = '';
+        foreach ($servicios as $servicio){
+            $text_servicios = $servicio['easy_servicio_descripcion'];
+        }
+
+        return $text_servicios;
     }
     return "default";
 }
