@@ -45,8 +45,8 @@ switch($message) {
         $response = $respuesta->queryResult->responseMessages[0]->text->text[0];
 
         //Acciones de base de datos
-        $resultado = acciones_bd($respuesta, $link);
-        $response = $response."\n".$resultado;
+        //$resultado = acciones_bd($respuesta, $link);
+        //$response = $response."\n".$resultado;
 
         sendMessage($chatId, $response);
         break;
