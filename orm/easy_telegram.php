@@ -12,7 +12,7 @@ class easy_telegram extends _modelo_parent
     public function __construct(PDO $link)
     {
         $tabla = 'easy_telegram';
-        $columnas = array($tabla => false);
+        $columnas = array($tabla => false,"easy_cliente" => $tabla);
         $campos_obligatorios[] = 'descripcion';
 
         parent::__construct(link: $link, tabla: $tabla, campos_obligatorios: $campos_obligatorios,

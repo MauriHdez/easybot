@@ -12,7 +12,7 @@ class easy_etapa_cita extends _modelo_parent
     public function __construct(PDO $link)
     {
         $tabla = 'easy_etapa_cita';
-        $columnas = array($tabla => false);
+        $columnas = array($tabla => false, "easy_cita" => $tabla, "easy_status_cita" => $tabla);
         $campos_obligatorios[] = 'descripcion';
 
         parent::__construct(link: $link, tabla: $tabla, campos_obligatorios: $campos_obligatorios,
