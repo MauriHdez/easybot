@@ -5,6 +5,8 @@ require 'vendor/autoload.php';
 
 use base\conexion;
 use config\generales;
+use gamboamartin\easybot\models\easy_cita;
+use gamboamartin\easybot\models\easy_etapa_cita;
 use gamboamartin\easybot\models\easy_servicio;
 use gamboamartin\errores\errores;
 
@@ -100,6 +102,16 @@ function acciones_bd($respuesta, $link){
 
         return $text_servicios;
     }
+
+    $filtro['easy_telegram.id_telegram_message'] = '';
+    $filtro['easy_status_cita.descripcion'] = 'agendada';
+    $citas_activas = (new easy_etapa_cita($link))->filtro_and(filtro: $filtro);
+    if(errores::$error){
+        $error = (new errores())->error(mensaje: 'Error obtener registros cita',data:  $citas_activas);
+        print_r($error);
+        die('Error');
+    }
+
     return "";
 }
 
