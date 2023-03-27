@@ -26,10 +26,10 @@ $update = json_decode($input, TRUE);
 $chatId = $update['message']['chat']['id'];
 $message = $update['message']['text'];
 
-/*
+
 $chatId = '5655914615';
 $message = 'Si';
-*/
+
 
 switch($message) {
     case '/start':
@@ -254,16 +254,19 @@ function acciones_bd($respuesta, $link){
                 die('Error');
             }
 
+            $registro_cita['descripcion'] = $fecha.'-'.$easy_cliente->registro_id.'-'.
+                $horarios->registros[0]['easy_horario_id'];
             $registro_cita['fecha_cita'] = $fecha;
-            $registro_cita['easy_horario_id'] = $horarios->registros[0]->easy_horario_id;
+            $registro_cita['easy_horario_id'] = $horarios->registros[0]['easy_horario_id'];
             $registro_cita['easy_cliente_id'] = $easy_cliente->registro_id;
             $easy_cita = (new easy_cita($link))->alta_registro(registro: $registro_cita);
             if(errores::$error){
                 $error = (new errores())->error(mensaje: 'Error al insertar registro cita',data:  $easy_cita);
                 print_r($error);
                 die('Error');
-            }            
+            }
 
+            $registro_etapa_cita['descripcion'] = $easy_cita->registro_id."-1";
             $registro_etapa_cita['easy_status_cita_id'] = '1';
             $registro_etapa_cita['easy_cita_id'] = $easy_cita->registro_id;
             $easy_etapa_cita = (new easy_etapa_cita($link))->alta_registro(registro: $registro_etapa_cita);
@@ -272,6 +275,8 @@ function acciones_bd($respuesta, $link){
                 print_r($error);
                 die('Error');
             }
+
+            return "Se inserto cita con existo";
         }
     }
     /*$filtro['easy_telegram.id_telegram_message'] = '';
