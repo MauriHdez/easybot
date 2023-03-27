@@ -13,11 +13,18 @@ class easy_etapa_cita extends _modelo_parent
     {
         $tabla = 'easy_etapa_cita';
         $columnas = array($tabla => false, "easy_cita" => $tabla, "easy_status_cita" => $tabla, "easy_cliente"=>"easy_cita",
-            "easy_horario"=>"easy_cita", 'easy_telegram' => 'easy_cliente');
+            "easy_horario"=>"easy_cita");
         $campos_obligatorios[] = 'descripcion';
 
+        $columnas_extra = array();
+        /*$columnas_extra['easy_telegram_id_telegram_message']
+            = "(SELECT * FROM 
+            easy_telegram INNER JOIN 
+            easy_cliente ON easy_cliente.id = easy_telegram.easy_client_id
+            WHERE easy_cliente.id = easy_cita.easy_cliente_id )";*/
+
         parent::__construct(link: $link, tabla: $tabla, campos_obligatorios: $campos_obligatorios,
-            columnas: $columnas);
+            columnas: $columnas, columnas_extra: $columnas_extra);
 
         $this->NAMESPACE = __NAMESPACE__;
     }

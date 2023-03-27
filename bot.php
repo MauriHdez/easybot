@@ -7,6 +7,7 @@ use base\conexion;
 use config\generales;
 use gamboamartin\easybot\models\easy_cita;
 use gamboamartin\easybot\models\easy_etapa_cita;
+use gamboamartin\easybot\models\easy_horario;
 use gamboamartin\easybot\models\easy_servicio;
 use gamboamartin\errores\errores;
 
@@ -19,14 +20,14 @@ $website = 'https://api.telegram.org/bot'.$token;
 $input = file_get_contents('php://input');
 $update = json_decode($input, TRUE);
 
-
+/*
 $chatId = $update['message']['chat']['id'];
 $message = $update['message']['text'];
-
-/*
-$chatId = '5655914615';
-$message = 'Agendar';
 */
+
+$chatId = '5655914615';
+$message = 'para hoy';
+
 
 switch($message) {
     case '/start':
@@ -45,8 +46,8 @@ switch($message) {
         $response = $respuesta->queryResult->responseMessages[0]->text->text[0];
 
         //Acciones de base de datos
-        //$resultado = acciones_bd($respuesta, $link);
-        //$response = $response."\n".$resultado;
+        $resultado = acciones_bd($respuesta, $link);
+        $response = $response."\n".$resultado;
 
         sendMessage($chatId, $response);
         break;
@@ -103,14 +104,76 @@ function acciones_bd($respuesta, $link){
         return $text_servicios;
     }
 
-    $filtro['easy_telegram.id_telegram_message'] = '';
+
+    if($respuesta->queryResult->intent->displayName === "horarios") {
+        $dia = $respuesta->queryResult->parameters->fecha_cita->day;
+        $year = $respuesta->queryResult->parameters->fecha_cita->year;
+        $mes = $respuesta->queryResult->parameters->fecha_cita->month;
+
+        $fecha = $year."-".$mes."-".$dia;
+        $date = date_create($fecha);
+        $fecha = date_format($date,"Y-m-d");
+
+        $dias = array('DOMINGO','LUNES','MARTES','MIERCOLES','JUEVES','VIERNES','SABADO');
+        $dia_semana = $dias[date('N', strtotime($fecha))];
+
+        $filtro_horarios['easy_dia_semana.descripcion'] = $dia_semana;
+        $horarios = (new easy_horario($link))->filtro_and(filtro: $filtro_horarios);
+        if(errores::$error){
+            $error = (new errores())->error(mensaje: 'Error obtener registros',data:  $horarios);
+            print_r($error);
+            die('Error');
+        }
+        
+        $filtro_citas['easy_cita.fecha_cita'] = $fecha;
+        $filtro_citas['easy_status_cita.descripcion'] = 'agendada';
+        $citas = (new easy_etapa_cita($link))->filtro_and(filtro: $filtro_citas);
+        if(errores::$error){
+            $error = (new errores())->error(mensaje: 'Error obtener registros',data:  $citas);
+            print_r($error);
+            die('Error');
+        }
+
+        $text_horarios = 'Una disculpa para ese dia no existen horarios';
+        if($horarios->n_registros < 1){
+            return $text_horarios;
+        }
+
+        $res_disponibles = array();
+        if($citas->n_registros > 0){
+            foreach ($horarios->registros as $horario){
+                $existe = false;
+                foreach ($citas->registros as $cita){
+                    if($horario['easy_horario_id'] === $cita['easy_horario_id']){
+                        $existe = true;
+                    }
+                }
+                if (!$existe){
+                    $res_disponibles[] = $horario;
+                }
+            }
+
+            foreach ($res_disponibles as $res_disponible){
+                $text_horarios = "     - ".$res_disponible['easy_servicio_nombre']."\n";
+            }
+
+            return $text_horarios;
+        }
+
+        foreach ($horarios->registros  as $horario){
+            $text_horarios = "     - ".$horario['easy_servicio_nombre']."\n";
+        }
+
+        return $text_horarios;
+    }
+    /*$filtro['easy_telegram.id_telegram_message'] = '';
     $filtro['easy_status_cita.descripcion'] = 'agendada';
     $citas_activas = (new easy_etapa_cita($link))->filtro_and(filtro: $filtro);
     if(errores::$error){
         $error = (new errores())->error(mensaje: 'Error obtener registros cita',data:  $citas_activas);
         print_r($error);
         die('Error');
-    }
+    }*/
 
     return "";
 }
