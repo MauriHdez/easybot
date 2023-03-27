@@ -78,7 +78,7 @@ function getResponse($message){
 
     curl_setopt($ch, CURLOPT_POST, 1);
     curl_setopt($ch, CURLOPT_POSTFIELDS, $json);
-    curl_setopt($ch, CURLOPT_HTTPHEADER, array('Authorization: Bearer ya29.a0Ael9sCPHmJXtmLi0j-GRRDgl9KoRf9iJjFC55KqWYgPgQMyOxD_2OfEqg73-Ad_wwjBba70ei01V25s6C8mXblnKXw7n0jDvvqCvJm_mRBIyRNDi40DzrpjJHodjAVC8npCdwz1vy9cUqJAPgG_BE0Lhy2Wq1MGNoR29EfcaCgYKAQkSARESFQF4udJhgySnOtxpAgDlfSzfEk8a8w0174', 'x-goog-user-project: easyacces-378204','Content-Type: application/json; charset=utf-8', ));
+    curl_setopt($ch, CURLOPT_HTTPHEADER, array('Authorization: Bearer ya29.a0Ael9sCOGj6XZMlpAYs_gddF37JaaoWGBTfEqeTyWVepjGXU5Z3EzCQG9iQkTOd6rcqIQYpjmOCavKgEQTFcpOUvCLk1kaXd6hju-4LbMDlNwVGhCRuYxoyD2omzkkqcd1Gpyv6IgjdaK9sIiRxPt_sOZ7ZXUmAqNIztW1CgaCgYKARISARESFQF4udJhgO9MsX5yL4g_szEaJLCV3g0174', 'x-goog-user-project: easyacces-378204','Content-Type: application/json; charset=utf-8', ));
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
     $result = curl_exec($ch);
     curl_close($ch);
@@ -206,8 +206,12 @@ function acciones_bd($respuesta, $link){
                 die('Error');
 
             }
-            print_r($_SESSION);EXIT;
+            $_SESSION['activa'] = 1;
+            $_SESSION['grupo_id'] = '2';
+            $_SESSION['usuario_id'] ='2';
+
             $registro_cliente['nombre'] = $respuesta->queryResult->parameters->nombre;
+            $registro_cliente['adm_genero_id'] = "3";
             $easy_cliente = (new easy_cliente($link))->alta_registro(registro: $registro_cliente);
             if(errores::$error){
                 $error = (new errores())->error(mensaje: 'Error insertar cliente',data:  $easy_cliente);
