@@ -6,6 +6,7 @@ require 'vendor/autoload.php';
 use base\conexion;
 use config\generales;
 use gamboamartin\easybot\models\easy_cita;
+use gamboamartin\easybot\models\easy_cliente;
 use gamboamartin\easybot\models\easy_etapa_cita;
 use gamboamartin\easybot\models\easy_horario;
 use gamboamartin\easybot\models\easy_servicio;
@@ -76,7 +77,7 @@ function getResponse($message){
 
     curl_setopt($ch, CURLOPT_POST, 1);
     curl_setopt($ch, CURLOPT_POSTFIELDS, $json);
-    curl_setopt($ch, CURLOPT_HTTPHEADER, array('Authorization: Bearer ya29.a0Ael9sCO_OR1hB1lmscL5qAo5nBtXNecEaKbQDYn8cqTeTkYyVaPWWampIU9r3lB1nyDttgRenloyyVU5b6P8VgdOvObv-gd5pQ85Cs9UsaBO_Hwye_ayCwFuJxaM8wCzHbMNdSvSwdUYdNEFVDNEjxuF0k_F_lLuOcbVO0waCgYKAXESARESFQF4udJhmOqERCIQD2BQ2FOMWsR5dQ0174', 'x-goog-user-project: easyacces-378204','Content-Type: application/json; charset=utf-8', ));
+    curl_setopt($ch, CURLOPT_HTTPHEADER, array('Authorization: Bearer ya29.a0Ael9sCOUUvxg5tXhmam0PjNL3rysCfQm-Kii7Y_SxOHLHu7jVFuqwc8pOvnGYoFRyS2RPZoU1IIV3nVXFe0ISM2Nl947Q24DI9Cx68Aatx_vd0QaOi1_YmNk8U3fOF9ohRMtPAwQXh-JUDc0kADlKqUOrdnjfH6LO9vJYkMaCgYKAfcSARESFQF4udJhflNPxdbv4yY-Z_5sRnHFDw0174', 'x-goog-user-project: easyacces-378204','Content-Type: application/json; charset=utf-8', ));
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
     $result = curl_exec($ch);
     curl_close($ch);
@@ -181,7 +182,7 @@ function acciones_bd($respuesta, $link){
 
         $meses = array('Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre');
         $mes = $meses[date('m', strtotime($fecha))];
-
+print_r($mes);exit;
         $hora_inicio = $respuesta->queryResult->parameters->hora_inicio->hours;
         $min_inicio = $respuesta->queryResult->parameters->hora_inicio->minutes;
         $hora_fin = $respuesta->queryResult->parameters->hora_fin->hours;
@@ -194,7 +195,66 @@ function acciones_bd($respuesta, $link){
     }
 
     if($respuesta->queryResult->intent->displayName === "cita.confirmada") {
+        $respuesta_confir = $respuesta->queryResult->parameters->respuesta_confir;
 
+        $respuesta_confir = strtolower($respuesta_confir);
+        if($respuesta_confir === 'si'){
+            $registro_cliente['nombre'] = $respuesta->queryResult->parameters->nombre;
+            $easy_cliente = (new easy_cliente($link))->alta_registro(registro: $registro_cliente);
+            if(errores::$error){
+                $error = (new errores())->error(mensaje: 'Error insertar cliente',data:  $easy_cliente);
+                print_r($error);
+                die('Error');
+            }
+
+            $dia = $respuesta->queryResult->parameters->fecha_cita->day;
+            $year = $respuesta->queryResult->parameters->fecha_cita->year;
+            $mes = $respuesta->queryResult->parameters->fecha_cita->month;
+
+            $fecha = $year."-".$mes."-".$dia;
+            $date = date_create($fecha);
+            $fecha = date_format($date,"Y-m-d");
+
+            $hora_inicio = $respuesta->queryResult->parameters->hora_inicio->hours;
+            $min_inicio = $respuesta->queryResult->parameters->hora_inicio->minutes;
+            $seg_inicio = $respuesta->queryResult->parameters->hora_inicio->seconds;
+            $horario_inicio = $hora_inicio.':'.$min_inicio.':'.$seg_inicio;
+            $horario_inicio =date($horario_inicio,"H:i:s");
+
+            $hora_fin = $respuesta->queryResult->parameters->hora_fin->hours;
+            $min_fin = $respuesta->queryResult->parameters->hora_fin->minutes;
+            $seg_fin = $respuesta->queryResult->parameters->hora_fin->seconds;
+            $horario_fin = $hora_fin.':'.$min_fin.':'.$seg_fin;
+            $horario_fin =date($horario_fin,"H:i:s");
+
+            $filtro_horarios_cita['easy_horario.hora_inicio'] = $horario_inicio;
+            $filtro_horarios_cita['easy_horario.hora_fin'] = $horario_fin;
+            $horarios = (new easy_horario($link))->filtro_and(filtro: $filtro_horarios_cita);
+            if(errores::$error){
+                $error = (new errores())->error(mensaje: 'Error obtener registros',data:  $horarios);
+                print_r($error);
+                die('Error');
+            }
+
+            $registro_cita['fecha_cita'] = $fecha;
+            $registro_cita['easy_horario_id'] = $horarios->registros[0]->easy_horario_id;
+            $registro_cita['easy_cliente_id'] = $easy_cliente->registro_id;
+            $easy_cita = (new easy_cita($link))->alta_registro(registro: $registro_cita);
+            if(errores::$error){
+                $error = (new errores())->error(mensaje: 'Error al insertar registro cita',data:  $easy_cita);
+                print_r($error);
+                die('Error');
+            }            
+            
+            $registro_etapa_cita['easy_status_cita_id'] = '1';
+            $registro_etapa_cita['easy_cita_id'] = $easy_cita->registro_id;
+            $easy_etapa_cita = (new easy_etapa_cita($link))->alta_registro(registro: $registro_etapa_cita);
+            if(errores::$error){
+                $error = (new errores())->error(mensaje: 'Error al insertar registro etapa_cita',data:  $easy_etapa_cita);
+                print_r($error);
+                die('Error');
+            }
+        }
     }
     /*$filtro['easy_telegram.id_telegram_message'] = '';
     $filtro['easy_status_cita.descripcion'] = 'agendada';
