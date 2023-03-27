@@ -25,10 +25,10 @@ $update = json_decode($input, TRUE);
 $chatId = $update['message']['chat']['id'];
 $message = $update['message']['text'];
 
-/*
+
 $chatId = '5655914615';
-$message = 'para hoy';
-*/
+$message = 'Mauricio';
+
 
 switch($message) {
     case '/start':
@@ -180,9 +180,10 @@ function acciones_bd($respuesta, $link){
         $dias = array('Domingo','Lunes','Martes','Miercoles','Jueves','Viernes','Sabado');
         $dia_semana = $dias[date('N', strtotime($fecha))];
 
-        $meses = array('Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre');
+        $meses = array('01'=>'Enero','02'=>'Febrero','03'=>'Marzo','04'=>'Abril','05'=>'Mayo','06'=>'Junio',
+            '07'=>'Julio','08'=>'Agosto','09'=>'Septiembre','10'=>'Octubre','11'=>'Noviembre','12'=>'Diciembre');
         $mes = $meses[date('m', strtotime($fecha))];
-print_r($mes);exit;
+
         $hora_inicio = $respuesta->queryResult->parameters->hora_inicio->hours;
         $min_inicio = $respuesta->queryResult->parameters->hora_inicio->minutes;
         $hora_fin = $respuesta->queryResult->parameters->hora_fin->hours;
