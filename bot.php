@@ -24,10 +24,10 @@ $update = json_decode($input, TRUE);
 $chatId = $update['message']['chat']['id'];
 $message = $update['message']['text'];
 
-/*
+
 $chatId = '5655914615';
 $message = 'para hoy';
-*/
+
 
 switch($message) {
     case '/start':
@@ -154,14 +154,14 @@ function acciones_bd($respuesta, $link){
             }
 
             foreach ($res_disponibles as $res_disponible){
-                $text_horarios = "     - ".$res_disponible['easy_servicio_nombre']."\n";
+                $text_horarios = "     - ".$res_disponible['easy_horario_descripcion']."\n";
             }
 
             return $text_horarios;
         }
 
         foreach ($horarios->registros  as $horario){
-            $text_horarios = "     - ".$horario['easy_servicio_nombre']."\n";
+            $text_horarios = "     - ".$horario['easy_horario_descripcion']."\n";
         }
 
         return $text_horarios;
