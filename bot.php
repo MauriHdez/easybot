@@ -26,10 +26,10 @@ $update = json_decode($input, TRUE);
 $chatId = $update['message']['chat']['id'];
 $message = $update['message']['text'];
 
-/*
+
 $chatId = '5655914615';
 $message = 'Si';
-*/
+
 
 switch($message) {
     case '/start':
@@ -218,7 +218,7 @@ function acciones_bd($respuesta, $link){
                 print_r($error);
                 die('Error');
             }
-print_r($easy_cliente);exit;
+
             $dia = $respuesta->queryResult->parameters->fecha_cita->day;
             $year = $respuesta->queryResult->parameters->fecha_cita->year;
             $mes = $respuesta->queryResult->parameters->fecha_cita->month;
