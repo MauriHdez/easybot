@@ -76,7 +76,7 @@ function getResponse($message){
 
     curl_setopt($ch, CURLOPT_POST, 1);
     curl_setopt($ch, CURLOPT_POSTFIELDS, $json);
-    curl_setopt($ch, CURLOPT_HTTPHEADER, array('Authorization: Bearer ya29.a0Ael9sCPbnHjjggXchHmuhQfeiXb1CiAPsBb9bpA786bfJNNbkACYMsPcE3HrR-u_1iLEBzYODCPWE7kKtCKCLCHfnGPl7EEPZOZo9h9rLZW-uFvox6ILjy6e_lb1khVY21FchHu-ETXIktueeyCfer5bOxQ4MJxAxExdWtUaCgYKAS4SARESFQF4udJhX9_cVc-HWEkRIXCRuHgTFg0174', 'x-goog-user-project: easyacces-378204','Content-Type: application/json; charset=utf-8', ));
+    curl_setopt($ch, CURLOPT_HTTPHEADER, array('Authorization: Bearer ya29.a0Ael9sCMMFWlvEgvM6Im55b7qfTsWcV1hzc9vVYT-DhjcC5s6Y5vemUFy0TKJTlNMb882_ZyguVhMyzXyzea5rPrivqlzl1u_i9S90Epiol3yFy8zAPHa9W4gySpgqPhyN9QqJGGyWK8TqYGPhuM_pG3zWlKtzxwSEeRQtVQaCgYKAfoSARESFQF4udJhNPeC6o03I3SFsF4Ol2LBYA0174', 'x-goog-user-project: easyacces-378204','Content-Type: application/json; charset=utf-8', ));
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
     $result = curl_exec($ch);
     curl_close($ch);
@@ -154,14 +154,14 @@ function acciones_bd($respuesta, $link){
             }
 
             foreach ($res_disponibles as $res_disponible){
-                $text_horarios = "     - ".$res_disponible['easy_horario_descripcion']."\n";
+                $text_horarios .= "     - ".$res_disponible['easy_horario_descripcion']."\n";
             }
 
             return $text_horarios;
         }
 
         foreach ($horarios->registros  as $horario){
-            $text_horarios = "     - ".$horario['easy_horario_descripcion']."\n";
+            $text_horarios .= "     - ".$horario['easy_horario_descripcion']."\n";
         }
 
         return $text_horarios;
