@@ -231,14 +231,20 @@ function acciones_bd($respuesta, $link){
             $min_inicio = $respuesta->queryResult->parameters->hora_inicio->minutes;
             $seg_inicio = $respuesta->queryResult->parameters->hora_inicio->seconds;
             $horario_inicio = $hora_inicio.':'.$min_inicio.':'.$seg_inicio;
-            $horario_inicio =date($horario_inicio,"H:i:s");
+            $horario_inicio = date_create($horario_inicio);
+            $horario_inicio = date_format($horario_inicio,"H:i:s");
 
             $hora_fin = $respuesta->queryResult->parameters->hora_fin->hours;
             $min_fin = $respuesta->queryResult->parameters->hora_fin->minutes;
             $seg_fin = $respuesta->queryResult->parameters->hora_fin->seconds;
             $horario_fin = $hora_fin.':'.$min_fin.':'.$seg_fin;
-            $horario_fin =date($horario_fin,"H:i:s");
+            $horario_fin = date_create($horario_fin);
+            $horario_fin =date_format($horario_fin,"H:i:s");
 
+            $dias = array('DOMINGO','LUNES','MARTES','MIERCOLES','JUEVES','VIERNES','SABADO');
+            $dia_semana = $dias[date('N', strtotime($fecha))];
+
+            $filtro_horarios_cita['easy_dia_semana.descripcion'] = $dia_semana;
             $filtro_horarios_cita['easy_horario.hora_inicio'] = $horario_inicio;
             $filtro_horarios_cita['easy_horario.hora_fin'] = $horario_fin;
             $horarios = (new easy_horario($link))->filtro_and(filtro: $filtro_horarios_cita);
@@ -257,7 +263,7 @@ function acciones_bd($respuesta, $link){
                 print_r($error);
                 die('Error');
             }            
-            
+
             $registro_etapa_cita['easy_status_cita_id'] = '1';
             $registro_etapa_cita['easy_cita_id'] = $easy_cita->registro_id;
             $easy_etapa_cita = (new easy_etapa_cita($link))->alta_registro(registro: $registro_etapa_cita);
