@@ -76,7 +76,7 @@ function getResponse($message){
 
     curl_setopt($ch, CURLOPT_POST, 1);
     curl_setopt($ch, CURLOPT_POSTFIELDS, $json);
-    curl_setopt($ch, CURLOPT_HTTPHEADER, array('Authorization: Bearer ya29.a0Ael9sCMMFWlvEgvM6Im55b7qfTsWcV1hzc9vVYT-DhjcC5s6Y5vemUFy0TKJTlNMb882_ZyguVhMyzXyzea5rPrivqlzl1u_i9S90Epiol3yFy8zAPHa9W4gySpgqPhyN9QqJGGyWK8TqYGPhuM_pG3zWlKtzxwSEeRQtVQaCgYKAfoSARESFQF4udJhNPeC6o03I3SFsF4Ol2LBYA0174', 'x-goog-user-project: easyacces-378204','Content-Type: application/json; charset=utf-8', ));
+    curl_setopt($ch, CURLOPT_HTTPHEADER, array('Authorization: Bearer ya29.a0Ael9sCO_OR1hB1lmscL5qAo5nBtXNecEaKbQDYn8cqTeTkYyVaPWWampIU9r3lB1nyDttgRenloyyVU5b6P8VgdOvObv-gd5pQ85Cs9UsaBO_Hwye_ayCwFuJxaM8wCzHbMNdSvSwdUYdNEFVDNEjxuF0k_F_lLuOcbVO0waCgYKAXESARESFQF4udJhmOqERCIQD2BQ2FOMWsR5dQ0174', 'x-goog-user-project: easyacces-378204','Content-Type: application/json; charset=utf-8', ));
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
     $result = curl_exec($ch);
     curl_close($ch);
@@ -190,7 +190,11 @@ function acciones_bd($respuesta, $link){
         $nombre = $respuesta->queryResult->parameters->nombre;
 
         return $dia_semana." ".$dia." de ".$mes." del ".$year.", de ".$hora_inicio.":".$min_inicio." a ".
-            $hora_fin.":".$min_fin." a nombre de ".$nombre;
+            $hora_fin.":".$min_fin." a nombre de ".$nombre.", me podria confirmar? por favor";
+    }
+
+    if($respuesta->queryResult->intent->displayName === "cita.confirmada") {
+
     }
     /*$filtro['easy_telegram.id_telegram_message'] = '';
     $filtro['easy_status_cita.descripcion'] = 'agendada';
