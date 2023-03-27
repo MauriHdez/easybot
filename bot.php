@@ -154,14 +154,14 @@ function acciones_bd($respuesta, $link){
             }
 
             foreach ($res_disponibles as $res_disponible){
-                $text_horarios = "     - ".$res_disponible['easy_horario_descripcion']."\n";
+                $text_horarios .= "     - ".$res_disponible['easy_horario_descripcion']."\n";
             }
 
             return $text_horarios;
         }
 
         foreach ($horarios->registros  as $horario){
-            $text_horarios = "     - ".$horario['easy_horario_descripcion']."\n";
+            $text_horarios .= "     - ".$horario['easy_horario_descripcion']."\n";
         }
 
         return $text_horarios;
