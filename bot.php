@@ -88,7 +88,7 @@ function acciones_bd($respuesta, $link){
      * $respuesta->queryResult->intent->displayName  =  intento
      * */
 
-    if($respuesta->queryResult->intent->displayName === "agendar.cita"){
+    /*if($respuesta->queryResult->intent->displayName === "agendar.cita"){
         $servicios = (new easy_servicio($link))->registros_activos();
         if(errores::$error){
             $error = (new errores())->error(mensaje: 'Error obtener registros',data:  $servicios);
@@ -102,7 +102,7 @@ function acciones_bd($respuesta, $link){
         }
 
         return $text_servicios;
-    }
+    }*/
 
 
     if($respuesta->queryResult->intent->displayName === "horarios") {
@@ -134,9 +134,9 @@ function acciones_bd($respuesta, $link){
             die('Error');
         }
 
-        $text_horarios = 'Una disculpa para ese dia no existen horarios';
+        $text_horarios = '';
         if($horarios->n_registros < 1){
-            return $text_horarios;
+            return 'Una disculpa para ese dia no existen horarios';
         }
 
         $res_disponibles = array();
@@ -165,6 +165,32 @@ function acciones_bd($respuesta, $link){
         }
 
         return $text_horarios;
+    }
+
+    if($respuesta->queryResult->intent->displayName === "ingresa.nombre") {
+        $dia = $respuesta->queryResult->parameters->fecha_cita->day;
+        $year = $respuesta->queryResult->parameters->fecha_cita->year;
+        $mes = $respuesta->queryResult->parameters->fecha_cita->month;
+
+        $fecha = $year."-".$mes."-".$dia;
+        $date = date_create($fecha);
+        $fecha = date_format($date,"Y-m-d");
+
+        $dias = array('Domingo','Lunes','Martes','Miercoles','Jueves','Viernes','Sabado');
+        $dia_semana = $dias[date('N', strtotime($fecha))];
+
+        $meses = array('Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre');
+        $mes = $meses[date('m', strtotime($fecha))];
+
+        $hora_inicio = $respuesta->queryResult->parameters->hora_inicio->hours;
+        $min_inicio = $respuesta->queryResult->parameters->hora_inicio->minutes;
+        $hora_fin = $respuesta->queryResult->parameters->hora_fin->hours;
+        $min_fin = $respuesta->queryResult->parameters->hora_fin->minutes;
+
+        $nombre = $respuesta->queryResult->parameters->nombre;
+
+        return $dia_semana." ".$dia." de ".$mes." del ".$year.", de ".$hora_inicio.":".$min_inicio." a ".
+            $hora_fin.":".$min_fin." a nombre de ".$nombre;
     }
     /*$filtro['easy_telegram.id_telegram_message'] = '';
     $filtro['easy_status_cita.descripcion'] = 'agendada';
