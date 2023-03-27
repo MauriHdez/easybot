@@ -5,6 +5,7 @@ require 'vendor/autoload.php';
 
 use base\conexion;
 use config\generales;
+use gamboamartin\administrador\models\adm_session;
 use gamboamartin\easybot\models\easy_cita;
 use gamboamartin\easybot\models\easy_cliente;
 use gamboamartin\easybot\models\easy_etapa_cita;
@@ -27,7 +28,7 @@ $message = $update['message']['text'];
 
 /*
 $chatId = '5655914615';
-$message = 'Mauricio';
+$message = 'Si';
 */
 
 switch($message) {
@@ -77,7 +78,7 @@ function getResponse($message){
 
     curl_setopt($ch, CURLOPT_POST, 1);
     curl_setopt($ch, CURLOPT_POSTFIELDS, $json);
-    curl_setopt($ch, CURLOPT_HTTPHEADER, array('Authorization: Bearer ya29.a0Ael9sCOUUvxg5tXhmam0PjNL3rysCfQm-Kii7Y_SxOHLHu7jVFuqwc8pOvnGYoFRyS2RPZoU1IIV3nVXFe0ISM2Nl947Q24DI9Cx68Aatx_vd0QaOi1_YmNk8U3fOF9ohRMtPAwQXh-JUDc0kADlKqUOrdnjfH6LO9vJYkMaCgYKAfcSARESFQF4udJhflNPxdbv4yY-Z_5sRnHFDw0174', 'x-goog-user-project: easyacces-378204','Content-Type: application/json; charset=utf-8', ));
+    curl_setopt($ch, CURLOPT_HTTPHEADER, array('Authorization: Bearer ya29.a0Ael9sCPHmJXtmLi0j-GRRDgl9KoRf9iJjFC55KqWYgPgQMyOxD_2OfEqg73-Ad_wwjBba70ei01V25s6C8mXblnKXw7n0jDvvqCvJm_mRBIyRNDi40DzrpjJHodjAVC8npCdwz1vy9cUqJAPgG_BE0Lhy2Wq1MGNoR29EfcaCgYKAQkSARESFQF4udJhgySnOtxpAgDlfSzfEk8a8w0174', 'x-goog-user-project: easyacces-378204','Content-Type: application/json; charset=utf-8', ));
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
     $result = curl_exec($ch);
     curl_close($ch);
@@ -185,14 +186,12 @@ function acciones_bd($respuesta, $link){
         $mes = $meses[date('m', strtotime($fecha))];
 
         $hora_inicio = $respuesta->queryResult->parameters->hora_inicio->hours;
-        $min_inicio = $respuesta->queryResult->parameters->hora_inicio->minutes;
         $hora_fin = $respuesta->queryResult->parameters->hora_fin->hours;
-        $min_fin = $respuesta->queryResult->parameters->hora_fin->minutes;
 
         $nombre = $respuesta->queryResult->parameters->nombre;
 
-        return $dia_semana." ".$dia." de ".$mes." del ".$year.", de ".$hora_inicio.":".$min_inicio." a ".
-            $hora_fin.":".$min_fin." a nombre de ".$nombre.", me podria confirmar? por favor";
+        return $dia_semana." ".$dia." de ".$mes." del ".$year.", de ".$hora_inicio.":00 a ".
+            $hora_fin.":00 a nombre de ".$nombre.", me podria confirmar? por favor";
     }
 
     if($respuesta->queryResult->intent->displayName === "cita.confirmada") {
@@ -200,6 +199,14 @@ function acciones_bd($respuesta, $link){
 
         $respuesta_confir = strtolower($respuesta_confir);
         if($respuesta_confir === 'si'){
+            $session = (new adm_session($link))->carga_data_session();
+            if(errores::$error){
+                $error = (new errores())->error(mensaje: 'Error al asignar session',data: $session);
+                print_r($error);
+                die('Error');
+
+            }
+            print_r($_SESSION);EXIT;
             $registro_cliente['nombre'] = $respuesta->queryResult->parameters->nombre;
             $easy_cliente = (new easy_cliente($link))->alta_registro(registro: $registro_cliente);
             if(errores::$error){
@@ -207,7 +214,7 @@ function acciones_bd($respuesta, $link){
                 print_r($error);
                 die('Error');
             }
-
+print_r($easy_cliente);exit;
             $dia = $respuesta->queryResult->parameters->fecha_cita->day;
             $year = $respuesta->queryResult->parameters->fecha_cita->year;
             $mes = $respuesta->queryResult->parameters->fecha_cita->month;
