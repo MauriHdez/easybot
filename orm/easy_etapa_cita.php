@@ -31,6 +31,21 @@ class easy_etapa_cita extends _modelo_parent
 
     public function alta_bd(array $keys_integra_ds = array()): array|stdClass
     {
+        $easy_cita = (new easy_cita($this->link))->registro(registro_id: $this->registro['easy_cita_id']);
+        if (errores::$error) {
+            return $this->error->error(mensaje: 'Error al inicializar campo base', data: $easy_cita);
+        }
+           
+        $easy_status_cita = (new easy_status_cita($this->link))->registro(registro_id: $this->registro['easy_status_cita_id']);
+        if (errores::$error) {
+            return $this->error->error(mensaje: 'Error al inicializar campo base', data: $easy_status_cita);
+        }
+        
+        if(!isset($this->registro['descripcion'])){
+            $this->registro['descripcion'] = $easy_cita['easy_cliente_nombre']."-".$easy_cita['easy_cita_fecha_cita']."-".
+                $easy_status_cita['easy_status_cita_descripcion'];
+        }
+
         $this->registro = $this->campos_base(data: $this->registro, modelo: $this);
         if (errores::$error) {
             return $this->error->error(mensaje: 'Error al inicializar campo base', data: $this->registro);
