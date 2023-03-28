@@ -80,17 +80,9 @@ class controlador_easy_status_cita extends system {
         $keys_selects['codigo'] = new stdClass();
         $keys_selects['codigo']->cols = 4;
 
-        $keys_selects['hora_inicio'] = new stdClass();
-        $keys_selects['hora_inicio']->cols = 4;
-        $keys_selects['hora_inicio']->place_holder = 'Hora Inicio';
-
-        $keys_selects['hora_fin'] = new stdClass();
-        $keys_selects['hora_fin']->cols = 4;
-        $keys_selects['hora_fin']->place_holder = 'Hora Fin';
-
-        $keys_selects['easy_dia_semana_id'] = new stdClass();
-        $keys_selects['easy_dia_semana_id']->cols = 12;
-        $keys_selects['easy_dia_semana_id']->label = 'Dia Semana';
+        $keys_selects['descripcion'] = new stdClass();
+        $keys_selects['descripcion']->cols = 8;
+        $keys_selects['descripcion']->place_holder = 'Status Cita';
 
         $inputs = $this->inputs(keys_selects: $keys_selects);
         if(errores::$error){
@@ -137,11 +129,10 @@ class controlador_easy_status_cita extends system {
     protected function campos_view(): array
     {
         $keys = new stdClass();
-        $keys->inputs = array('codigo', 'hora_inicio', 'hora_fin');
+        $keys->inputs = array('codigo', 'descripcion');
         $keys->selects = array();
 
         $init_data = array();
-        $init_data['easy_dia_semana'] = "gamboamartin\\easybot";
 
         $campos_view = $this->campos_view_base(init_data: $init_data, keys: $keys);
         if (errores::$error) {
@@ -188,14 +179,11 @@ class controlador_easy_status_cita extends system {
 
     private function init_datatable(): stdClass
     {
-        $columns["easy_horario_id"]["titulo"] = "Id";
-        $columns["easy_horario_codigo"]["titulo"] = "Código";
-        $columns["easy_horario_hora_inicio"]["titulo"] = "Hora Inicio";
-        $columns["easy_horario_hora_fin"]["titulo"] = "Hora Fin";
-        $columns["easy_dia_semana_descripcion"]["titulo"] = "Dia Semana";
+        $columns["easy_status_cita_id"]["titulo"] = "Id";
+        $columns["easy_status_cita_codigo"]["titulo"] = "Código";
+        $columns["easy_status_cita_descripcion"]["titulo"] = "Status cita";
 
-        $filtro = array("easy_horario.id", "easy_horario.codigo", "easy_horario.hora_inicio",
-            "easy_horario.hora_fin", "easy_dia_semana.descripcion");
+        $filtro = array("easy_status_cita.id", "easy_status_cita.codigo", "easy_status_cita.descripcion");
 
         $datatables = new stdClass();
         $datatables->columns = $columns;
@@ -379,8 +367,12 @@ class controlador_easy_status_cita extends system {
                 ws: $ws);
         }
 
-        $keys_selects['easy_dia_semana_id']->id_selected = $this->registro['easy_dia_semana_id'];
+        $keys_selects['codigo'] = new stdClass();
+        $keys_selects['codigo']->cols = 4;
 
+        $keys_selects['descripcion'] = new stdClass();
+        $keys_selects['descripcion']->cols = 8;
+        $keys_selects['descripcion']->place_holder = 'Status Cita';
 
         $base = $this->base_upd(keys_selects: $keys_selects, params: array(), params_ajustados: array());
         if (errores::$error) {
