@@ -23,6 +23,11 @@ class easy_cita extends _modelo_parent
 
     public function alta_bd(array $keys_integra_ds = array()): array|stdClass
     {
+        if(!isset($this->registro['descripcion'])){
+            $this->registro['descripcion'] = $this->registro['fecha_cita']."-".$this->registro['easy_cliente_id']." ".
+                $this->registro['easy_horario_id'];
+        }
+
         $this->registro = $this->campos_base(data: $this->registro, modelo: $this);
         if (errores::$error) {
             return $this->error->error(mensaje: 'Error al inicializar campo base', data: $this->registro);
