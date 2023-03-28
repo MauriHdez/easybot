@@ -28,6 +28,15 @@ class easy_cita extends _modelo_parent
                 $this->registro['easy_horario_id'];
         }
 
+        $easy_cliente = (new easy_cliente($this->link))->registro(registro_id: $this->registro['easy_cliente_id']);
+        if (errores::$error) {
+            return $this->error->error(mensaje: 'Error al inicializar campo base', data: $easy_cliente);
+        }
+
+        if(!isset($this->registro['descripcion_select'])){
+            $this->registro['descripcion_select'] = $easy_cliente['easy_cliente_nombre']."-".$this->registro['fecha_cita'];
+        }
+
         $this->registro = $this->campos_base(data: $this->registro, modelo: $this);
         if (errores::$error) {
             return $this->error->error(mensaje: 'Error al inicializar campo base', data: $this->registro);
