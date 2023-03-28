@@ -13,7 +13,7 @@ class easy_etapa_cita extends _modelo_parent
     {
         $tabla = 'easy_etapa_cita';
         $columnas = array($tabla => false, "easy_cita" => $tabla, "easy_status_cita" => $tabla, "easy_cliente"=>"easy_cita",
-            "easy_horario"=>"easy_cita", "easy_telegram"=>"easy_cliente");
+            "easy_horario"=>"easy_cita");
         $campos_obligatorios[] = 'descripcion';
 
         $columnas_extra = array();
