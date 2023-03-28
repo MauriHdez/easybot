@@ -29,7 +29,7 @@ $message = $update['message']['text'];
 
 /*
 $chatId = '5655914615';
-$message = 'Si';
+$message = 'cancelar cita';
 */
 
 switch($message) {
@@ -303,13 +303,14 @@ function acciones_bd($respuesta, $link, $chatId){
 
     if($respuesta->queryResult->intent->displayName === "cancelar_cita") {
 
-        $filtro_tel['easy_telegram.descripcion'] = $chatId;
+        $filtro_tel['easy_telegram.id_telegram_message'] = $chatId;
         $easy_telegram = (new easy_telegram($link))->filtro_and(filtro: $filtro_tel);
         if(errores::$error) {
             $error = (new errores())->error(mensaje: 'Error obtener registros', data: $easy_telegram);
             print_r($error);
             die('Error');
         }
+
         if($easy_telegram->n_registros > 0) {
             $filtro_citas['easy_cita.easy_cliente_id'] = $easy_telegram->registros[0]['easy_cliente_id'];
             $filtro_citas['easy_status_cita.descripcion'] = 'agendada';
@@ -319,6 +320,41 @@ function acciones_bd($respuesta, $link, $chatId){
                 print_r($error);
                 die('Error');
             }
+
+            if($citas->n_registros < 1) {
+                return "No tiene citas activas";
+            }
+
+            $text_citas = '';
+            foreach ($citas->registros as $cita){
+                $text_citas .= "     - ".$cita['easy_cita_fecha_cita']." a las ".$cita['easy_horario_descripcion']."\n";
+            }
+            return $text_citas;
+        }
+
+        return "No tiene citas activas";
+    }
+
+    if($respuesta->queryResult->intent->displayName === "recordar.cita") {
+
+        $filtro_tel['easy_telegram.id_telegram_message'] = $chatId;
+        $easy_telegram = (new easy_telegram($link))->filtro_and(filtro: $filtro_tel);
+        if(errores::$error) {
+            $error = (new errores())->error(mensaje: 'Error obtener registros', data: $easy_telegram);
+            print_r($error);
+            die('Error');
+        }
+
+        if($easy_telegram->n_registros > 0) {
+            $filtro_citas['easy_cita.easy_cliente_id'] = $easy_telegram->registros[0]['easy_cliente_id'];
+            $filtro_citas['easy_status_cita.descripcion'] = 'agendada';
+            $citas = (new easy_etapa_cita($link))->filtro_and(filtro: $filtro_citas);
+            if(errores::$error) {
+                $error = (new errores())->error(mensaje: 'Error obtener registros', data: $citas);
+                print_r($error);
+                die('Error');
+            }
+
             if($citas->n_registros < 1) {
                 return "No tiene citas activas";
             }
