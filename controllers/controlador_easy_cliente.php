@@ -79,17 +79,25 @@ class controlador_easy_cliente extends system {
         $keys_selects['codigo'] = new stdClass();
         $keys_selects['codigo']->cols = 4;
 
-        $keys_selects['hora_inicio'] = new stdClass();
-        $keys_selects['hora_inicio']->cols = 4;
-        $keys_selects['hora_inicio']->place_holder = 'Hora Inicio';
+        $keys_selects['nombre'] = new stdClass();
+        $keys_selects['nombre']->cols = 12;
+        $keys_selects['nombre']->place_holder = 'Nombre';
 
-        $keys_selects['hora_fin'] = new stdClass();
-        $keys_selects['hora_fin']->cols = 4;
-        $keys_selects['hora_fin']->place_holder = 'Hora Fin';
+        $keys_selects['telefono'] = new stdClass();
+        $keys_selects['telefono']->cols = 6;
+        $keys_selects['telefono']->place_holder = 'Telefono';
 
-        $keys_selects['easy_dia_semana_id'] = new stdClass();
-        $keys_selects['easy_dia_semana_id']->cols = 12;
-        $keys_selects['easy_dia_semana_id']->label = 'Dia Semana';
+        $keys_selects['correo'] = new stdClass();
+        $keys_selects['correo']->cols = 6;
+        $keys_selects['correo']->place_holder = 'Correo';
+
+        $keys_selects['direccion'] = new stdClass();
+        $keys_selects['direccion']->cols = 12;
+        $keys_selects['direccion']->place_holder = 'Direccion';
+
+        $keys_selects['adm_genero_id'] = new stdClass();
+        $keys_selects['adm_genero_id']->cols = 12;
+        $keys_selects['adm_genero_id']->label = 'Genero';
 
         $inputs = $this->inputs(keys_selects: $keys_selects);
         if(errores::$error){
@@ -136,11 +144,11 @@ class controlador_easy_cliente extends system {
     protected function campos_view(): array
     {
         $keys = new stdClass();
-        $keys->inputs = array('codigo', 'hora_inicio', 'hora_fin');
+        $keys->inputs = array('codigo','nombre', 'telefono', 'correo','direccion');
         $keys->selects = array();
 
         $init_data = array();
-        $init_data['easy_dia_semana'] = "gamboamartin\\easybot";
+        $init_data['adm_genero'] = "gamboamartin\\administrador";
 
         $campos_view = $this->campos_view_base(init_data: $init_data, keys: $keys);
         if (errores::$error) {
@@ -190,15 +198,13 @@ class controlador_easy_cliente extends system {
         $columns["easy_cliente_id"]["titulo"] = "Id";
         $columns["easy_cliente_codigo"]["titulo"] = "Código";
         $columns["easy_cliente_nombre"]["titulo"] = "Nombre";
-        $columns["easy_cliente_ap"]["titulo"] = "Apellido Paterno";
-        $columns["easy_cliente_am"]["titulo"] = "Apellido Materno";
         $columns["easy_cliente_telefono"]["titulo"] = "Telefono";
         $columns["easy_cliente_correo"]["titulo"] = "Correo";
         $columns["easy_cliente_direccion"]["titulo"] = "Direccion";
         $columns["adm_genero_descripcion"]["titulo"] = "Genero";
 
         $filtro = array("easy_cliente.id", "easy_cliente.codigo", "easy_cliente.nombre",
-            "easy_cliente.ap", "easy_cliente.am", "easy_cliente.telefono","easy_cliente.correo");
+            "easy_cliente.telefono","easy_cliente.correo");
 
         $datatables = new stdClass();
         $datatables->columns = $columns;
@@ -329,8 +335,8 @@ class controlador_easy_cliente extends system {
 
     public function init_selects_inputs(): array
     {
-         return $this->init_selects(keys_selects: array(), key: "easy_dia_semana_id",
-            label: "Dia Semana");
+         return $this->init_selects(keys_selects: array(), key: "adm_genero_id",
+            label: "Genero");
     }
 
     protected function key_selects_txt(array $keys_selects): array
@@ -382,7 +388,27 @@ class controlador_easy_cliente extends system {
                 ws: $ws);
         }
 
-        $keys_selects['easy_dia_semana_id']->id_selected = $this->registro['easy_dia_semana_id'];
+        $keys_selects['nombre'] = new stdClass();
+        $keys_selects['nombre']->cols = 12;
+        $keys_selects['nombre']->place_holder = 'Nombre';
+
+        $keys_selects['telefono'] = new stdClass();
+        $keys_selects['telefono']->cols = 6;
+        $keys_selects['telefono']->place_holder = 'Telefono';
+
+        $keys_selects['correo'] = new stdClass();
+        $keys_selects['correo']->cols = 6;
+        $keys_selects['correo']->place_holder = 'Correo';
+
+        $keys_selects['direccion'] = new stdClass();
+        $keys_selects['direccion']->cols = 12;
+        $keys_selects['direccion']->place_holder = 'Direccion';
+
+        $keys_selects['adm_genero_id'] = new stdClass();
+        $keys_selects['adm_genero_id']->cols = 12;
+        $keys_selects['adm_genero_id']->label = 'Genero';
+
+        $keys_selects['adm_genero_id']->id_selected = $this->registro['adm_genero_id'];
 
 
         $base = $this->base_upd(keys_selects: $keys_selects, params: array(), params_ajustados: array());

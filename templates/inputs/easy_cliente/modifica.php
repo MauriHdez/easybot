@@ -1,9 +1,10 @@
 <?php /** @var gamboamartin\cat_sat\controllers\controlador_cat_sat_grupo_producto $controlador  controlador en ejecucion */ ?>
 <?php use config\views; ?>
-<?php echo $controlador->inputs->codigo; ?>
-<?php echo $controlador->inputs->hora_inicio; ?>
-<?php echo $controlador->inputs->hora_fin; ?>
-<?php echo $controlador->inputs->easy_dia_semana_id; ?>
+<?php echo $controlador->inputs->nombre; ?>
+<?php echo $controlador->inputs->telefono; ?>
+<?php echo $controlador->inputs->correo; ?>
+<?php echo $controlador->inputs->direccion; ?>
+<?php echo $controlador->inputs->adm_genero_id; ?>
 <?php include (new views())->ruta_templates.'botons/submit/modifica_bd.php';?>
 <div class="error" style="margin-bottom: 20px"></div>
 <div class="col-row-12">

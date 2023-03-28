@@ -24,8 +24,15 @@ class easy_cliente extends _modelo_parent
     public function alta_bd(array $keys_integra_ds = array()): array|stdClass
     {
         if(!isset($this->registro['descripcion'])){
-            $this->registro['descripcion'] = $this->registro['hora_inicio']."-".$this->registro['hora_fin']." ".
-                $this->registro['easy_dia_semana_id'];
+            $this->registro['descripcion'] = $this->registro['nombre'];
+        }
+
+        if(!isset($this->registro['codigo'])){
+            $this->registro['codigo'] = $this->registro['nombre']."-".$this->registro['adm_genero_id'].rand();
+        }
+
+        if(!isset($this->registro['descripcion_select'])){
+            $this->registro['descripcion_select'] = $this->registro['nombre'];
         }
 
         $this->registro = $this->campos_base(data: $this->registro, modelo: $this);
