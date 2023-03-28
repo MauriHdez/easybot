@@ -75,12 +75,13 @@ class controlador_easy_etapa_cita extends system {
                 mensaje: 'Error al inicializar alta',data:  $r_alta, header: $header,ws:  $ws);
         }
 
-        $keys_selects['codigo'] = new stdClass();
-        $keys_selects['codigo']->cols = 4;
+        $keys_selects['easy_status_cita_id'] = new stdClass();
+        $keys_selects['easy_status_cita_id']->cols = 12;
+        $keys_selects['easy_status_cita_id']->label = 'Status Cita';
 
-        $keys_selects['descripcion'] = new stdClass();
-        $keys_selects['descripcion']->cols = 8;
-        $keys_selects['descripcion']->place_holder = 'Descripcion';
+        $keys_selects['easy_cita_id'] = new stdClass();
+        $keys_selects['easy_cita_id']->cols = 12;
+        $keys_selects['easy_cita_id']->label = 'Cita';
 
         $inputs = $this->inputs(keys_selects: $keys_selects);
         if(errores::$error){
@@ -127,10 +128,12 @@ class controlador_easy_etapa_cita extends system {
     protected function campos_view(): array
     {
         $keys = new stdClass();
-        $keys->inputs = array('codigo', 'descripcion');
+        $keys->inputs = array();
         $keys->selects = array();
 
         $init_data = array();
+        $init_data['easy_cita'] = "gamboamartin\\easybot";
+        $init_data['easy_status_cita'] = "gamboamartin\\easybot";
 
         $campos_view = $this->campos_view_base(init_data: $init_data, keys: $keys);
         if (errores::$error) {
@@ -159,8 +162,8 @@ class controlador_easy_etapa_cita extends system {
 
     private function init_configuraciones(): controler
     {
-        $this->seccion_titulo = 'Dia Semana';
-        $this->titulo_lista = 'Dia Semana';
+        $this->seccion_titulo = 'Etapa Cita';
+        $this->titulo_lista = 'Etapa Cita';
 
         $this->path_vendor_views = 'gamboa.martin/easybot';
         $this->lista_get_data = true;
@@ -177,11 +180,12 @@ class controlador_easy_etapa_cita extends system {
 
     private function init_datatable(): stdClass
     {
-        $columns["easy_dia_semana_id"]["titulo"] = "Id";
-        $columns["easy_dia_semana_codigo"]["titulo"] = "Código";
-        $columns["easy_dia_semana_descripcion"]["titulo"] = "Dia Semana";
+        $columns["easy_etapa_cita_id"]["titulo"] = "Id";
+        $columns["easy_cita_fecha_cita"]["titulo"] = "Fecha Cita";
+        $columns["easy_status_cita_descripcion"]["titulo"] = "Status Cita";
 
-        $filtro = array("easy_dia_semana.id", "easy_dia_semana.codigo", "easy_dia_semana.descripcion");
+        $filtro = array("easy_etapa_cita.id", "easy_etapa_cita.codigo", "easy_cita.fecha_cita",
+            "easy_status_cita.descripcion");
 
         $datatables = new stdClass();
         $datatables->columns = $columns;
@@ -312,8 +316,10 @@ class controlador_easy_etapa_cita extends system {
 
     public function init_selects_inputs(): array
     {
-         return $this->init_selects(keys_selects: array(), key: "easy_dia_semana_id",
-            label: "Dia Semana");
+         $this->init_selects(keys_selects: array(), key: "easy_status_cita_id",
+            label: "Status Cita");
+         return $this->init_selects(keys_selects: array(), key: "easy_cita_id",
+            label: "Cita");
     }
 
     protected function key_selects_txt(array $keys_selects): array
@@ -364,6 +370,17 @@ class controlador_easy_etapa_cita extends system {
             return $this->retorno_error(mensaje: 'Error al inicializar selects', data: $keys_selects, header: $header,
                 ws: $ws);
         }
+
+        $keys_selects['easy_status_cita_id'] = new stdClass();
+        $keys_selects['easy_status_cita_id']->cols = 12;
+        $keys_selects['easy_status_cita_id']->label = 'Status Cita';
+
+        $keys_selects['easy_cita_id'] = new stdClass();
+        $keys_selects['easy_cita_id']->cols = 12;
+        $keys_selects['easy_cita_id']->label = 'Cita';
+
+        $keys_selects['easy_cita_id']->id_selected = $this->registro['easy_cita_id'];
+        $keys_selects['easy_status_cita_id']->id_selected = $this->registro['easy_status_cita_id'];
 
         $base = $this->base_upd(keys_selects: $keys_selects, params: array(), params_ajustados: array());
         if (errores::$error) {

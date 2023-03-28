@@ -11,7 +11,7 @@ class easy_status_cita extends _modelo_parent
 {
     public function __construct(PDO $link)
     {
-        $tabla = 'easy_horario';
+        $tabla = 'easy_status_cita';
         $columnas = array($tabla => false);
         $campos_obligatorios[] = 'descripcion';
 
