@@ -11,6 +11,7 @@ use gamboamartin\easybot\models\easy_cliente;
 use gamboamartin\easybot\models\easy_etapa_cita;
 use gamboamartin\easybot\models\easy_horario;
 use gamboamartin\easybot\models\easy_servicio;
+use gamboamartin\easybot\models\easy_telegram;
 use gamboamartin\errores\errores;
 
 $con = new conexion();
@@ -48,7 +49,7 @@ switch($message) {
         $response = $respuesta->queryResult->responseMessages[0]->text->text[0];
 
         //Acciones de base de datos
-        $resultado = acciones_bd($respuesta, $link);
+        $resultado = acciones_bd($respuesta, $link, $chatId);
         $response = $response."\n".$resultado;
 
         sendMessage($chatId, $response);
@@ -85,7 +86,7 @@ function getResponse($message){
     return $result;
 }
 
-function acciones_bd($respuesta, $link){
+function acciones_bd($respuesta, $link, $chatId){
     /*
      * $respuesta->queryResult->intent->displayName  =  intento
      * */
@@ -276,8 +277,60 @@ function acciones_bd($respuesta, $link){
                 die('Error');
             }
 
+            $filtro_tel['easy_telegram.descripcion'] = $chatId;
+            $easy_telegram = (new easy_telegram($link))->filtro_and(filtro: $filtro_tel);
+            if(errores::$error) {
+                $error = (new errores())->error(mensaje: 'Error obtener registros', data: $easy_telegram);
+                print_r($error);
+                die('Error');
+            }
+
+            if($easy_telegram->n_registros < 1){
+                $registro_telegram['descripcion'] = $easy_cliente->registro_id."-".$chatId;
+                $registro_telegram['id_telegram_message'] = $chatId;
+                $registro_telegram['easy_cliente_id'] = $easy_cliente->registro_id;
+                $easy_telegram = (new easy_telegram($link))->alta_registro(registro: $registro_telegram);
+                if(errores::$error){
+                    $error = (new errores())->error(mensaje: 'Error al insertar registro telegram',data:  $easy_telegram);
+                    print_r($error);
+                    die('Error');
+                }
+            }
+
             return "Se inserto cita con existo";
         }
+    }
+
+    if($respuesta->queryResult->intent->displayName === "cancelar_cita") {
+
+        $filtro_tel['easy_telegram.descripcion'] = $chatId;
+        $easy_telegram = (new easy_telegram($link))->filtro_and(filtro: $filtro_tel);
+        if(errores::$error) {
+            $error = (new errores())->error(mensaje: 'Error obtener registros', data: $easy_telegram);
+            print_r($error);
+            die('Error');
+        }
+        if($easy_telegram->n_registros > 0) {
+            $filtro_citas['easy_cita.easy_cliente_id'] = $easy_telegram->registros[0]['easy_cliente_id'];
+            $filtro_citas['easy_status_cita.descripcion'] = 'agendada';
+            $citas = (new easy_etapa_cita($link))->filtro_and(filtro: $filtro_citas);
+            if(errores::$error) {
+                $error = (new errores())->error(mensaje: 'Error obtener registros', data: $citas);
+                print_r($error);
+                die('Error');
+            }
+            if($citas->n_registros < 1) {
+                return "No tiene citas activas";
+            }
+
+            $text_citas = '';
+            foreach ($citas->registros as $cita){
+                $text_citas .= "     - ".$cita['easy_cita_fecha_cita']." a las ".$cita['easy_horario_descripcion']."\n";
+            }
+            return $text_citas;
+        }
+
+        return "No tiene citas activas";
     }
     /*$filtro['easy_telegram.id_telegram_message'] = '';
     $filtro['easy_status_cita.descripcion'] = 'agendada';
