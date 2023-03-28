@@ -26,7 +26,7 @@ use stdClass;
 
 class controlador_easy_telegram extends system {
 
-    public controlador_easy_ $controltelegramador_easy_horario;
+    public controlador_easy_telegram $controlador_easy_telegram;
     public string $link_easy_horario_alta_bd = '';
 
     public function __construct(PDO      $link, html $html = new \gamboamartin\template_1\html(),
@@ -81,9 +81,13 @@ class controlador_easy_telegram extends system {
         $keys_selects['codigo'] = new stdClass();
         $keys_selects['codigo']->cols = 4;
 
-        $keys_selects['descripcion'] = new stdClass();
-        $keys_selects['descripcion']->cols = 8;
-        $keys_selects['descripcion']->place_holder = 'Descripcion';
+        $keys_selects['id_telegram_message'] = new stdClass();
+        $keys_selects['id_telegram_message']->cols = 8;
+        $keys_selects['id_telegram_message']->place_holder = 'ID telegram';
+
+        $keys_selects['easy_cliente_id'] = new stdClass();
+        $keys_selects['easy_cliente_id']->cols = 12;
+        $keys_selects['easy_cliente_id']->label = 'Cliente';
 
         $inputs = $this->inputs(keys_selects: $keys_selects);
         if(errores::$error){
@@ -130,10 +134,11 @@ class controlador_easy_telegram extends system {
     protected function campos_view(): array
     {
         $keys = new stdClass();
-        $keys->inputs = array('codigo', 'descripcion');
+        $keys->inputs = array('codigo', 'id_telegram_message');
         $keys->selects = array();
 
         $init_data = array();
+        $init_data['easy_cliente'] = "gamboamartin\\easybot";
 
         $campos_view = $this->campos_view_base(init_data: $init_data, keys: $keys);
         if (errores::$error) {
@@ -180,11 +185,13 @@ class controlador_easy_telegram extends system {
 
     private function init_datatable(): stdClass
     {
-        $columns["easy_dia_semana_id"]["titulo"] = "Id";
-        $columns["easy_dia_semana_codigo"]["titulo"] = "Código";
-        $columns["easy_dia_semana_descripcion"]["titulo"] = "Dia Semana";
+        $columns["easy_telegram_id"]["titulo"] = "Id";
+        $columns["easy_telegram_codigo"]["titulo"] = "Código";
+        $columns["easy_telegram_id_telegram_message"]["titulo"] = "ID telegram";
+        $columns["easy_cliente_descripcion"]["titulo"] = "Cliente";
 
-        $filtro = array("easy_dia_semana.id", "easy_dia_semana.codigo", "easy_dia_semana.descripcion");
+        $filtro = array("easy_telegram.id", "easy_telegram.codigo", "easy_telegram.id_telegram_message",
+            "easy_cliente.descripcion");
 
         $datatables = new stdClass();
         $datatables->columns = $columns;
@@ -367,6 +374,15 @@ class controlador_easy_telegram extends system {
             return $this->retorno_error(mensaje: 'Error al inicializar selects', data: $keys_selects, header: $header,
                 ws: $ws);
         }
+        $keys_selects['id_telegram_message'] = new stdClass();
+        $keys_selects['id_telegram_message']->cols = 8;
+        $keys_selects['id_telegram_message']->place_holder = 'ID telegram';
+
+        $keys_selects['easy_cliente_id'] = new stdClass();
+        $keys_selects['easy_cliente_id']->cols = 12;
+        $keys_selects['easy_cliente_id']->label = 'Cliente';
+
+        $keys_selects['easy_cliente_id']->id_selected = $this->registro['easy_cliente_id'];
 
         $base = $this->base_upd(keys_selects: $keys_selects, params: array(), params_ajustados: array());
         if (errores::$error) {
