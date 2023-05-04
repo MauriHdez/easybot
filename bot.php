@@ -511,6 +511,96 @@ function acciones_bd($respuesta, $link, $chatId){
         return "No tiene citas activas";
     }
 
+    if($respuesta->queryResult->intent->displayName === "selecciona.cita.edit") {
+        $filtro_tel['easy_telegram.id_telegram_message'] = $chatId;
+        $easy_telegram = (new easy_telegram($link))->filtro_and(filtro: $filtro_tel);
+        if(errores::$error) {
+            $error = (new errores())->error(mensaje: 'Error obtener registros', data: $easy_telegram);
+            print_r($error);
+            die('Error');
+        }
+
+        if($easy_telegram->n_registros > 0) {
+            $filtro_citas['easy_cita.easy_cliente_id'] = $easy_telegram->registros[0]['easy_cliente_id'];
+            $filtro_citas['easy_status_cita.descripcion'] = 'agendada';
+            $citas = (new easy_etapa_cita($link))->filtro_and(filtro: $filtro_citas);
+            if(errores::$error) {
+                $error = (new errores())->error(mensaje: 'Error obtener registros', data: $citas);
+                print_r($error);
+                die('Error');
+            }
+
+            if($citas->n_registros < 1) {
+                return "No tiene citas activas";
+            }
+
+            $citas_fin = array();
+            $cont = 1;
+            foreach ($citas->registros as $cita){
+                $cita['contador'] = $cont;
+                $citas_fin[] = $cita;
+            }
+            foreach ($citas_fin as $cita_fin){
+                if((int)$cita_fin['contador'] === (int)$respuesta->queryResult->parameters->contador_edit){
+                    $fecha = date_format($cita_fin['easy_cita_fecha_cita'],"Y-m-d");
+
+                    $dias = array('DOMINGO','LUNES','MARTES','MIERCOLES','JUEVES','VIERNES','SABADO');
+                    $dia_semana = $dias[date('N', strtotime($fecha))];
+
+                    $filtro_horarios['easy_dia_semana.descripcion'] = $dia_semana;
+                    $horarios = (new easy_horario($link))->filtro_and(filtro: $filtro_horarios);
+                    if(errores::$error){
+                        $error = (new errores())->error(mensaje: 'Error obtener registros',data:  $horarios);
+                        print_r($error);
+                        die('Error');
+                    }
+
+                    $filtro_citas['easy_cita.fecha_cita'] = $fecha;
+                    $filtro_citas['easy_status_cita.descripcion'] = 'agendada';
+                    $citas = (new easy_etapa_cita($link))->filtro_and(filtro: $filtro_citas);
+                    if(errores::$error){
+                        $error = (new errores())->error(mensaje: 'Error obtener registros',data:  $citas);
+                        print_r($error);
+                        die('Error');
+                    }
+
+                    $text_horarios = '';
+                    if($horarios->n_registros < 1){
+                        return 'Una disculpa para ese dia no existen horarios';
+                    }
+
+                    $res_disponibles = array();
+                    if($citas->n_registros > 0){
+                        foreach ($horarios->registros as $horario){
+                            $existe = false;
+                            foreach ($citas->registros as $cita){
+                                if($horario['easy_horario_id'] === $cita['easy_horario_id']){
+                                    $existe = true;
+                                }
+                            }
+                            if (!$existe){
+                                $res_disponibles[] = $horario;
+                            }
+                        }
+
+                        foreach ($res_disponibles as $res_disponible){
+                            $text_horarios .= "     - ".$res_disponible['easy_horario_descripcion']."\n";
+                        }
+
+                        return $text_horarios;
+                    }
+
+                    foreach ($horarios->registros  as $horario){
+                        $text_horarios .= "     - ".$horario['easy_horario_descripcion']."\n";
+                    }
+                    return $text_horarios;
+                }
+            }
+        }
+
+        return "No tiene citas activas";
+    }
+
     /*$filtro['easy_telegram.id_telegram_message'] = '';
     $filtro['easy_status_cita.descripcion'] = 'agendada';
     $citas_activas = (new easy_etapa_cita($link))->filtro_and(filtro: $filtro);
