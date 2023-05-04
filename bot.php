@@ -81,7 +81,7 @@ function getResponse($message){
 
     curl_setopt($ch, CURLOPT_POST, 1);
     curl_setopt($ch, CURLOPT_POSTFIELDS, $json);
-    curl_setopt($ch, CURLOPT_HTTPHEADER, array('Authorization: Bearer ya29.a0AWY7CkmsGmNRunqYgNqhc58KBnHr7TZxijqkvXGCFksB7Z9GlIISKDyG_1uNlnMJzdp7qIc0CA6C3PKfgOQVNibR7342LFZrfqNFtcSd193t0T0z-Hm34BEOOgyPrWGbeDGmUMKyY1w-05Qg4ilTGCwEI2lz8udHUR6E1c8aCgYKATMSAQ8SFQG1tDrpHG2XsKwxWof00Y4l_J9M6g0174', 'x-goog-user-project: easyacces-378204','Content-Type: application/json; charset=utf-8', ));
+    curl_setopt($ch, CURLOPT_HTTPHEADER, array('Authorization: Bearer ya29.a0AWY7Ckmis_uIU32nnMSLWDTncksd4VDjVo_YmEZ9ZCfwT7vnAzTBk8fwgLKhvmbttVX8Vi8gGzmW8IYogxHVr3WhnSxzHrvw1zUgVHvcoDO7o5r_X3V3pviYcXng0OIW4MYEUPHw_ocxetppoVSSTFpVzcMDQhsR55Q3bJsaCgYKASESAQ8SFQG1tDrpUpPSPqdQeFM2GGwMKFXzkw0174', 'x-goog-user-project: easyacces-378204','Content-Type: application/json; charset=utf-8', ));
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
     $result = curl_exec($ch);
     curl_close($ch);
