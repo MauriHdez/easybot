@@ -29,8 +29,9 @@ $message = $update['message']['text'];
 
 /*
 $chatId = '5655914615';
-$message = 'cuando es mi cita?';
+$message = 'Hola';
 */
+
 switch($message) {
     case '/start':
         $response = 'Me has iniciado';
@@ -370,26 +371,6 @@ function acciones_bd($respuesta, $link, $chatId){
 
             foreach ($citas_fin as $cita_fin){
                 if((int)$cita_fin['contador'] === (int)$respuesta->queryResult->parameters->contador_cancel){
-                    $session = (new adm_session($link))->carga_data_session();
-                    if(errores::$error){
-                        $error = (new errores())->error(mensaje: 'Error al asignar session',data: $session);
-                        print_r($error);
-                        die('Error');
-
-                    }
-                    $_SESSION['activa'] = 1;
-                    $_SESSION['grupo_id'] = '2';
-                    $_SESSION['usuario_id'] ='2';
-
-                    $registro_etapa_cita['descripcion'] = $cita_fin['easy_cita_id']."-1";
-                    $registro_etapa_cita['easy_status_cita_id'] = '3';
-                    $registro_etapa_cita['easy_cita_id'] = $cita_fin['easy_cita_id'];
-                    $easy_etapa_cita = (new easy_etapa_cita($link))->alta_registro(registro: $registro_etapa_cita);
-                    if(errores::$error){
-                        $error = (new errores())->error(mensaje: 'Error al insertar registro etapa_cita',data:  $easy_etapa_cita);
-                        print_r($error);
-                        die('Error');
-                    }
                     return "     - ".$cita_fin['easy_cita_fecha_cita']." a las ".$cita_fin['easy_horario_descripcion']."\n";
                 }
             }
@@ -446,11 +427,8 @@ function acciones_bd($respuesta, $link, $chatId){
                     $_SESSION['activa'] = 1;
                     $_SESSION['grupo_id'] = '2';
                     $_SESSION['usuario_id'] ='2';
-
-                    $registro_etapa_cita['descripcion'] = $cita_fin['easy_cita_id']."-1";
-                    $registro_etapa_cita['easy_status_cita_id'] = '3';
-                    $registro_etapa_cita['easy_cita_id'] = $cita_fin['easy_cita_id'];
-                    $easy_etapa_cita = (new easy_etapa_cita($link))->alta_registro(registro: $registro_etapa_cita);
+                    
+                    $easy_etapa_cita = (new easy_etapa_cita($link))->elimina_bd(id: $cita_fin['easy_etapa_cita_id']);
                     if(errores::$error){
                         $error = (new errores())->error(mensaje: 'Error al insertar registro etapa_cita',data:  $easy_etapa_cita);
                         print_r($error);
@@ -476,8 +454,8 @@ function acciones_bd($respuesta, $link, $chatId){
 
         if($easy_telegram->n_registros > 0) {
             $filtro_citas['easy_cita.easy_cliente_id'] = $easy_telegram->registros[0]['easy_cliente_id'];
-            $citas = (new easy_etapa_cita($link))->filtro_and(filtro: $filtro_citas,order:
-                array('easy_etapa_cita.id'=>'DESC'));
+            $filtro_citas['easy_status_cita.descripcion'] = 'agendada';
+            $citas = (new easy_etapa_cita($link))->filtro_and(filtro: $filtro_citas);
             if(errores::$error) {
                 $error = (new errores())->error(mensaje: 'Error obtener registros', data: $citas);
                 print_r($error);
@@ -488,21 +466,9 @@ function acciones_bd($respuesta, $link, $chatId){
                 return "No tiene citas activas";
             }
 
-            $res_disponibles = array();
-            $existe = false;
+            $text_citas = '';
             foreach ($citas->registros as $cita){
-
-                if($cita['easy_status_cita_descripcion'] === 'cancelada' || $cita['easy_status_cita_descripcion'] === 'finalizada'){
-                    $existe = true;
-                }
-
-                if (!$existe){
-                    $res_disponibles[] = $cita;
-                }
-            }
-            $text_citas = 'No tiene citas activas';
-            foreach ($res_disponibles as $res){
-                $text_citas .= "     - " . $res['easy_cita_fecha_cita'] . " a las " . $res['easy_horario_descripcion'] . "\n";
+                $text_citas .= "     - ".$cita['easy_cita_fecha_cita']." a las ".$cita['easy_horario_descripcion']."\n";
             }
             return $text_citas;
         }
