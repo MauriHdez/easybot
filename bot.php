@@ -326,10 +326,61 @@ function acciones_bd($respuesta, $link, $chatId){
             }
 
             $text_citas = '';
+            $cont = 1;
             foreach ($citas->registros as $cita){
-                $text_citas .= "     - ".$cita['easy_cita_fecha_cita']." a las ".$cita['easy_horario_descripcion']."\n";
+                $text_citas .= "    $cont.- ".$cita['easy_cita_fecha_cita']." a las ".$cita['easy_horario_descripcion']."\n";
             }
             return $text_citas;
+        }
+
+        return "No tiene citas activas";
+    }
+
+    if($respuesta->queryResult->intent->displayName === "seleccionar.cita.cancelar") {
+
+        $filtro_tel['easy_telegram.id_telegram_message'] = $chatId;
+        $easy_telegram = (new easy_telegram($link))->filtro_and(filtro: $filtro_tel);
+        if(errores::$error) {
+            $error = (new errores())->error(mensaje: 'Error obtener registros', data: $easy_telegram);
+            print_r($error);
+            die('Error');
+        }
+
+        if($easy_telegram->n_registros > 0) {
+            $filtro_citas['easy_cita.easy_cliente_id'] = $easy_telegram->registros[0]['easy_cliente_id'];
+            $filtro_citas['easy_status_cita.descripcion'] = 'agendada';
+            $citas = (new easy_etapa_cita($link))->filtro_and(filtro: $filtro_citas);
+            if(errores::$error) {
+                $error = (new errores())->error(mensaje: 'Error obtener registros', data: $citas);
+                print_r($error);
+                die('Error');
+            }
+
+            if($citas->n_registros < 1) {
+                return "No tiene citas activas";
+            }
+
+            $citas_fin = array();
+            $cont = 1;
+            foreach ($citas->registros as $cita){
+                $cita['contador'] = $cont;
+                $citas_fin[] = $cita;
+            }
+
+            foreach ($citas_fin as $cita_fin){
+                if((int)$cita_fin['contador'] === (int)$respuesta->queryResult->parameters->contador_cancel){
+                    $registro_etapa_cita['descripcion'] = $cita_fin['easy_cita_id']."-1";
+                    $registro_etapa_cita['easy_status_cita_id'] = '3';
+                    $registro_etapa_cita['easy_cita_id'] = $cita_fin['easy_cita_id'];
+                    $easy_etapa_cita = (new easy_etapa_cita($link))->alta_registro(registro: $registro_etapa_cita);
+                    if(errores::$error){
+                        $error = (new errores())->error(mensaje: 'Error al insertar registro etapa_cita',data:  $easy_etapa_cita);
+                        print_r($error);
+                        die('Error');
+                    }
+                    return "Se cancelo correctamente";
+                }
+            }
         }
 
         return "No tiene citas activas";
