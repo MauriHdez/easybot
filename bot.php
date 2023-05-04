@@ -77,7 +77,7 @@ function getResponse($message){
 
     //0e785973-9af6-431b-bbc6-e5b351364eb8 agente easyaccess
     // 437841ab-0bdd-4f9b-9267-0891ef9dabcc agente hola
-    $ch = curl_init('https://us-central1-dialogflow.googleapis.com/v3/projects/easyacces-378204/locations/us-central1/agents/437841ab-0bdd-4f9b-9267-0891ef9dabcc/sessions/SESSION_ID:detectIntent');
+    $ch = curl_init('https://us-central1-dialogflow.googleapis.com/v3/projects/easyacces-378204/locations/us-central1/agents/0e785973-9af6-431b-bbc6-e5b351364eb8/sessions/SESSION_ID:detectIntent');
 
     curl_setopt($ch, CURLOPT_POST, 1);
     curl_setopt($ch, CURLOPT_POSTFIELDS, $json);
