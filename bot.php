@@ -27,10 +27,10 @@ $update = json_decode($input, TRUE);
 $chatId = $update['message']['chat']['id'];
 $message = $update['message']['text'];
 
-/*
+
 $chatId = '5655914615';
-$message = '1';
-*/
+$message = 'Si';
+
 
 switch($message) {
     case '/start':
@@ -214,7 +214,7 @@ function acciones_bd($respuesta, $link, $chatId){
             $_SESSION['usuario_id'] ='2';
 
 
-            $filtro_tel['easy_telegram.descripcion'] = $chatId;
+            $filtro_tel['easy_telegram.id_telegram_message'] = $chatId;
             $easy_telegram = (new easy_telegram($link))->filtro_and(filtro: $filtro_tel);
             if(errores::$error) {
                 $error = (new errores())->error(mensaje: 'Error obtener registros', data: $easy_telegram);
@@ -671,7 +671,7 @@ function acciones_bd($respuesta, $link, $chatId){
                 die('Error');
             }
 
-            $filtro_tel['easy_telegram.descripcion'] = $chatId;
+            $filtro_tel['easy_telegram.id_telegram_message'] = $chatId;
             $easy_telegram = (new easy_telegram($link))->filtro_and(filtro: $filtro_tel);
             if(errores::$error) {
                 $error = (new errores())->error(mensaje: 'Error obtener registros', data: $easy_telegram);
