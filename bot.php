@@ -380,7 +380,7 @@ function acciones_bd($respuesta, $link, $chatId){
     }
 
 
-    if($respuesta->queryResult->intent->displayName === "si_confirmo") {
+    if($respuesta->queryResult->intent->displayName === "si.cancelar") {
 
         $filtro_tel['easy_telegram.id_telegram_message'] = $chatId;
         $easy_telegram = (new easy_telegram($link))->filtro_and(filtro: $filtro_tel);
@@ -412,7 +412,7 @@ function acciones_bd($respuesta, $link, $chatId){
             }
 
             $respuesta_si = $respuesta->queryResult->parameters->si_cancela;
-            print_r($respuesta_si);exit;
+
             $respuesta_si = strtolower($respuesta_si);
             foreach ($citas_fin as $cita_fin){
                 if((int)$cita_fin['contador'] === (int)$respuesta->queryResult->parameters->contador_cancel and
