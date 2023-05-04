@@ -222,7 +222,7 @@ function acciones_bd($respuesta, $link, $chatId){
                 die('Error');
             }
 
-            if($easy_telegram->n_registros > 1){
+            if($easy_telegram->n_registros >= 1){
                 $easy_cliente_id = $easy_telegram->registros[0]['easy_cliente_id'];
             }else{
                 $registro_cliente['nombre'] = $respuesta->queryResult->parameters->nombre;
