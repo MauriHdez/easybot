@@ -379,7 +379,6 @@ function acciones_bd($respuesta, $link, $chatId){
         return "No tiene citas activas";
     }
 
-
     if($respuesta->queryResult->intent->displayName === "si.cancelar") {
 
         $filtro_tel['easy_telegram.id_telegram_message'] = $chatId;
@@ -434,8 +433,9 @@ function acciones_bd($respuesta, $link, $chatId){
                         print_r($error);
                         die('Error');
                     }
-                    return "     - ".$cita_fin['easy_cita_fecha_cita']." a las ".$cita_fin['easy_horario_descripcion']."\n";
+                    return "Gracias por informarnos";
                 }
+                return "Se mantiene la cita";
             }
         }
 
@@ -475,6 +475,42 @@ function acciones_bd($respuesta, $link, $chatId){
 
         return "No tiene citas activas";
     }
+
+    if($respuesta->queryResult->intent->displayName === "mover.cita") {
+
+        $filtro_tel['easy_telegram.id_telegram_message'] = $chatId;
+        $easy_telegram = (new easy_telegram($link))->filtro_and(filtro: $filtro_tel);
+        if(errores::$error) {
+            $error = (new errores())->error(mensaje: 'Error obtener registros', data: $easy_telegram);
+            print_r($error);
+            die('Error');
+        }
+
+        if($easy_telegram->n_registros > 0) {
+            $filtro_citas['easy_cita.easy_cliente_id'] = $easy_telegram->registros[0]['easy_cliente_id'];
+            $filtro_citas['easy_status_cita.descripcion'] = 'agendada';
+            $citas = (new easy_etapa_cita($link))->filtro_and(filtro: $filtro_citas);
+            if(errores::$error) {
+                $error = (new errores())->error(mensaje: 'Error obtener registros', data: $citas);
+                print_r($error);
+                die('Error');
+            }
+
+            if($citas->n_registros < 1) {
+                return "No tiene citas activas";
+            }
+
+            $text_citas = '';
+            $cont = 1;
+            foreach ($citas->registros as $cita){
+                $text_citas .= "    $cont.- ".$cita['easy_cita_fecha_cita']." a las ".$cita['easy_horario_descripcion']."\n";
+            }
+            return $text_citas;
+        }
+
+        return "No tiene citas activas";
+    }
+
     /*$filtro['easy_telegram.id_telegram_message'] = '';
     $filtro['easy_status_cita.descripcion'] = 'agendada';
     $citas_activas = (new easy_etapa_cita($link))->filtro_and(filtro: $filtro);
