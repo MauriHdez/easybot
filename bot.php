@@ -335,6 +335,7 @@ function acciones_bd($respuesta, $link, $chatId){
             $cont = 1;
             foreach ($citas->registros as $cita){
                 $text_citas .= "    $cont.- ".$cita['easy_cita_fecha_cita']." a las ".$cita['easy_horario_descripcion']."\n";
+                $cont++;
             }
             return $text_citas;
         }
@@ -371,6 +372,7 @@ function acciones_bd($respuesta, $link, $chatId){
             foreach ($citas->registros as $cita){
                 $cita['contador'] = $cont;
                 $citas_fin[] = $cita;
+                $cont++;
             }
 
             foreach ($citas_fin as $cita_fin){
@@ -412,6 +414,7 @@ function acciones_bd($respuesta, $link, $chatId){
             foreach ($citas->registros as $cita){
                 $cita['contador'] = $cont;
                 $citas_fin[] = $cita;
+                $cont++;
             }
 
             $respuesta_si = $respuesta->queryResult->parameters->si_confirma;
@@ -508,6 +511,7 @@ function acciones_bd($respuesta, $link, $chatId){
             $cont = 1;
             foreach ($citas->registros as $cita){
                 $text_citas .= "    $cont.- ".$cita['easy_cita_fecha_cita']." a las ".$cita['easy_horario_descripcion']."\n";
+                $cont++;
             }
             return $text_citas;
         }
