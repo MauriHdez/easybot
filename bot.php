@@ -81,7 +81,7 @@ function getResponse($message){
 
     curl_setopt($ch, CURLOPT_POST, 1);
     curl_setopt($ch, CURLOPT_POSTFIELDS, $json);
-    curl_setopt($ch, CURLOPT_HTTPHEADER, array('Authorization: Bearer ya29.a0AWY7CkmchEhJJHVEaFFHQG0B4B6ZoFdM9cIhEDbaq8bu54qRxdI-KNNaXQu7_mhvKAM0cgfuq-tu_uDmoPxyc6WR63jK5ZpevJzZHGl6HXaKjmHFEGQ3Gg80oaf8dsseoeuH2xA8nQrWloCyuDNWG-dWIrMZPEZ0U9mhpTsaCgYKAQkSAQ8SFQG1tDrpINOFI5mU36CqDP7GoTIUUg0174', 'x-goog-user-project: easyacces-378204','Content-Type: application/json; charset=utf-8', ));
+    curl_setopt($ch, CURLOPT_HTTPHEADER, array('Authorization: Bearer ya29.a0AWY7CkmsGmNRunqYgNqhc58KBnHr7TZxijqkvXGCFksB7Z9GlIISKDyG_1uNlnMJzdp7qIc0CA6C3PKfgOQVNibR7342LFZrfqNFtcSd193t0T0z-Hm34BEOOgyPrWGbeDGmUMKyY1w-05Qg4ilTGCwEI2lz8udHUR6E1c8aCgYKATMSAQ8SFQG1tDrpHG2XsKwxWof00Y4l_J9M6g0174', 'x-goog-user-project: easyacces-378204','Content-Type: application/json; charset=utf-8', ));
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
     $result = curl_exec($ch);
     curl_close($ch);
@@ -412,7 +412,7 @@ function acciones_bd($respuesta, $link, $chatId){
             }
 
             $respuesta_si = $respuesta->queryResult->parameters->si_cancela;
-
+print_r($respuesta_si);exit;
             $respuesta_si = strtolower($respuesta_si);
             foreach ($citas_fin as $cita_fin){
                 if((int)$cita_fin['contador'] === (int)$respuesta->queryResult->parameters->contador_cancel and
