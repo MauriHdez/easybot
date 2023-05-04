@@ -27,10 +27,10 @@ $update = json_decode($input, TRUE);
 $chatId = $update['message']['chat']['id'];
 $message = $update['message']['text'];
 
-/*
+
 $chatId = '5655914615';
-$message = 'Hola';
-*/
+$message = 'Si';
+
 
 switch($message) {
     case '/start':
@@ -412,7 +412,7 @@ function acciones_bd($respuesta, $link, $chatId){
             }
 
             $respuesta_si = $respuesta->queryResult->parameters->si_cancela;
-
+            print_r($respuesta_si);exit;
             $respuesta_si = strtolower($respuesta_si);
             foreach ($citas_fin as $cita_fin){
                 if((int)$cita_fin['contador'] === (int)$respuesta->queryResult->parameters->contador_cancel and
@@ -427,7 +427,7 @@ function acciones_bd($respuesta, $link, $chatId){
                     $_SESSION['activa'] = 1;
                     $_SESSION['grupo_id'] = '2';
                     $_SESSION['usuario_id'] ='2';
-                    
+
                     $easy_etapa_cita = (new easy_etapa_cita($link))->elimina_bd(id: $cita_fin['easy_etapa_cita_id']);
                     if(errores::$error){
                         $error = (new errores())->error(mensaje: 'Error al insertar registro etapa_cita',data:  $easy_etapa_cita);
