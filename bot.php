@@ -27,10 +27,10 @@ $update = json_decode($input, TRUE);
 $chatId = $update['message']['chat']['id'];
 $message = $update['message']['text'];
 
-/*
+
 $chatId = '5655914615';
-$message = 'cancelar cita';
-*/
+$message = 'Si';
+
 
 switch($message) {
     case '/start':
@@ -79,7 +79,7 @@ function getResponse($message){
 
     curl_setopt($ch, CURLOPT_POST, 1);
     curl_setopt($ch, CURLOPT_POSTFIELDS, $json);
-    curl_setopt($ch, CURLOPT_HTTPHEADER, array('Authorization: Bearer ya29.a0AWY7Ckksi9-MhGWPyIYVPSpab41CJ4COZFBW---GJUqS_AmnjWAzEK_PiNiPiMBaSh3S5SpAVXcgdmilrg49Iwt07KWrau5pgRM5VhM3RDIq6Xpd3szn5PV9F4rrXB9xru1lurSIaIW3_NzbPdJJupFbsh0bCVvBfH7-Zk4aCgYKARMSAQ8SFQG1tDrpPYCIXN84cq_3WBtfZV9aqg0174', 'x-goog-user-project: easyacces-378204','Content-Type: application/json; charset=utf-8', ));
+    curl_setopt($ch, CURLOPT_HTTPHEADER, array('Authorization: Bearer ya29.a0AWY7CknTC0qcoxG8UlKhuAXLmWpIXZGuO0qROIG7AEHkk69oius2v_5NDxGx2sHxU35sV3Wcpo8HJf-9RVDqSNvjyWZPyLnWpF8qk5gd_wKMpU8a9QaeUfPSGiZKwFW_nzQC0wmuzQJIV9ZBuZPIQcsTJT5bcG1Bpa-bDugaCgYKAdISAQ8SFQG1tDrpbPBESLnNuezNTfUzirRAMg0174', 'x-goog-user-project: easyacces-378204','Content-Type: application/json; charset=utf-8', ));
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
     $result = curl_exec($ch);
     curl_close($ch);
@@ -369,6 +369,63 @@ function acciones_bd($respuesta, $link, $chatId){
 
             foreach ($citas_fin as $cita_fin){
                 if((int)$cita_fin['contador'] === (int)$respuesta->queryResult->parameters->contador_cancel){
+                    return "     - ".$cita_fin['easy_cita_fecha_cita']." a las ".$cita_fin['easy_horario_descripcion']."\n";
+                }
+            }
+        }
+
+        return "No tiene citas activas";
+    }
+
+
+    if($respuesta->queryResult->intent->displayName === "si_confirmo") {
+
+        $filtro_tel['easy_telegram.id_telegram_message'] = $chatId;
+        $easy_telegram = (new easy_telegram($link))->filtro_and(filtro: $filtro_tel);
+        if(errores::$error) {
+            $error = (new errores())->error(mensaje: 'Error obtener registros', data: $easy_telegram);
+            print_r($error);
+            die('Error');
+        }
+
+        if($easy_telegram->n_registros > 0) {
+            $filtro_citas['easy_cita.easy_cliente_id'] = $easy_telegram->registros[0]['easy_cliente_id'];
+            $filtro_citas['easy_status_cita.descripcion'] = 'agendada';
+            $citas = (new easy_etapa_cita($link))->filtro_and(filtro: $filtro_citas);
+            if(errores::$error) {
+                $error = (new errores())->error(mensaje: 'Error obtener registros', data: $citas);
+                print_r($error);
+                die('Error');
+            }
+
+            if($citas->n_registros < 1) {
+                return "No tiene citas activas";
+            }
+
+            $citas_fin = array();
+            $cont = 1;
+            foreach ($citas->registros as $cita){
+                $cita['contador'] = $cont;
+                $citas_fin[] = $cita;
+            }
+
+            $respuesta_si = $respuesta->queryResult->parameters->si_cancela;
+
+            $respuesta_si = strtolower($respuesta_si);
+            foreach ($citas_fin as $cita_fin){
+                if((int)$cita_fin['contador'] === (int)$respuesta->queryResult->parameters->contador_cancel and
+                    'si' === $respuesta_si){
+                    $session = (new adm_session($link))->carga_data_session();
+                    if(errores::$error){
+                        $error = (new errores())->error(mensaje: 'Error al asignar session',data: $session);
+                        print_r($error);
+                        die('Error');
+
+                    }
+                    $_SESSION['activa'] = 1;
+                    $_SESSION['grupo_id'] = '2';
+                    $_SESSION['usuario_id'] ='2';
+
                     $registro_etapa_cita['descripcion'] = $cita_fin['easy_cita_id']."-1";
                     $registro_etapa_cita['easy_status_cita_id'] = '3';
                     $registro_etapa_cita['easy_cita_id'] = $cita_fin['easy_cita_id'];
@@ -378,7 +435,7 @@ function acciones_bd($respuesta, $link, $chatId){
                         print_r($error);
                         die('Error');
                     }
-                    return "Se cancelo correctamente";
+                    return "     - ".$cita_fin['easy_cita_fecha_cita']." a las ".$cita_fin['easy_horario_descripcion']."\n";
                 }
             }
         }
