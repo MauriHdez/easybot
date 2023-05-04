@@ -29,7 +29,7 @@ $message = $update['message']['text'];
 
 /*
 $chatId = '5655914615';
-$message = 'Si';
+$message = '1';
 */
 
 switch($message) {
@@ -540,6 +540,7 @@ function acciones_bd($respuesta, $link, $chatId){
                 $cita['contador'] = $cont;
                 $citas_fin[] = $cita;
             }
+            print_r($citas_fin);exit;
             foreach ($citas_fin as $cita_fin){
                 if((int)$cita_fin['contador'] === (int)$respuesta->queryResult->parameters->contador_edit){
                     $fecha = date_format($cita_fin['easy_cita_fecha_cita'],"Y-m-d");
