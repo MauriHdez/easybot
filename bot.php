@@ -29,7 +29,7 @@ $message = $update['message']['text'];
 
 /*
 $chatId = '5655914615';
-$message = 'Si';
+$message = '1';
 */
 
 switch($message) {
@@ -79,7 +79,7 @@ function getResponse($message){
 
     curl_setopt($ch, CURLOPT_POST, 1);
     curl_setopt($ch, CURLOPT_POSTFIELDS, $json);
-    curl_setopt($ch, CURLOPT_HTTPHEADER, array('Authorization: Bearer ya29.a0AWY7CknTC0qcoxG8UlKhuAXLmWpIXZGuO0qROIG7AEHkk69oius2v_5NDxGx2sHxU35sV3Wcpo8HJf-9RVDqSNvjyWZPyLnWpF8qk5gd_wKMpU8a9QaeUfPSGiZKwFW_nzQC0wmuzQJIV9ZBuZPIQcsTJT5bcG1Bpa-bDugaCgYKAdISAQ8SFQG1tDrpbPBESLnNuezNTfUzirRAMg0174', 'x-goog-user-project: easyacces-378204','Content-Type: application/json; charset=utf-8', ));
+    curl_setopt($ch, CURLOPT_HTTPHEADER, array('Authorization: Bearer ya29.a0AWY7CkmchEhJJHVEaFFHQG0B4B6ZoFdM9cIhEDbaq8bu54qRxdI-KNNaXQu7_mhvKAM0cgfuq-tu_uDmoPxyc6WR63jK5ZpevJzZHGl6HXaKjmHFEGQ3Gg80oaf8dsseoeuH2xA8nQrWloCyuDNWG-dWIrMZPEZ0U9mhpTsaCgYKAQkSAQ8SFQG1tDrpINOFI5mU36CqDP7GoTIUUg0174', 'x-goog-user-project: easyacces-378204','Content-Type: application/json; charset=utf-8', ));
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
     $result = curl_exec($ch);
     curl_close($ch);
@@ -369,6 +369,26 @@ function acciones_bd($respuesta, $link, $chatId){
 
             foreach ($citas_fin as $cita_fin){
                 if((int)$cita_fin['contador'] === (int)$respuesta->queryResult->parameters->contador_cancel){
+                    $session = (new adm_session($link))->carga_data_session();
+                    if(errores::$error){
+                        $error = (new errores())->error(mensaje: 'Error al asignar session',data: $session);
+                        print_r($error);
+                        die('Error');
+
+                    }
+                    $_SESSION['activa'] = 1;
+                    $_SESSION['grupo_id'] = '2';
+                    $_SESSION['usuario_id'] ='2';
+
+                    $registro_etapa_cita['descripcion'] = $cita_fin['easy_cita_id']."-1";
+                    $registro_etapa_cita['easy_status_cita_id'] = '3';
+                    $registro_etapa_cita['easy_cita_id'] = $cita_fin['easy_cita_id'];
+                    $easy_etapa_cita = (new easy_etapa_cita($link))->alta_registro(registro: $registro_etapa_cita);
+                    if(errores::$error){
+                        $error = (new errores())->error(mensaje: 'Error al insertar registro etapa_cita',data:  $easy_etapa_cita);
+                        print_r($error);
+                        die('Error');
+                    }
                     return "     - ".$cita_fin['easy_cita_fecha_cita']." a las ".$cita_fin['easy_horario_descripcion']."\n";
                 }
             }
