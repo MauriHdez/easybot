@@ -213,13 +213,37 @@ function acciones_bd($respuesta, $link, $chatId){
             $_SESSION['grupo_id'] = '2';
             $_SESSION['usuario_id'] ='2';
 
-            $registro_cliente['nombre'] = $respuesta->queryResult->parameters->nombre;
-            $registro_cliente['adm_genero_id'] = "3";
-            $easy_cliente = (new easy_cliente($link))->alta_registro(registro: $registro_cliente);
-            if(errores::$error){
-                $error = (new errores())->error(mensaje: 'Error insertar cliente',data:  $easy_cliente);
+
+            $filtro_tel['easy_telegram.descripcion'] = $chatId;
+            $easy_telegram = (new easy_telegram($link))->filtro_and(filtro: $filtro_tel);
+            if(errores::$error) {
+                $error = (new errores())->error(mensaje: 'Error obtener registros', data: $easy_telegram);
                 print_r($error);
                 die('Error');
+            }
+
+            if($easy_telegram->n_registros > 1){
+                $easy_cliente_id = $easy_telegram->registros[0]['easy_cliente_id'];
+            }else{
+                $registro_cliente['nombre'] = $respuesta->queryResult->parameters->nombre;
+                $registro_cliente['adm_genero_id'] = "3";
+                $easy_cliente = (new easy_cliente($link))->alta_registro(registro: $registro_cliente);
+                if(errores::$error){
+                    $error = (new errores())->error(mensaje: 'Error insertar cliente',data:  $easy_cliente);
+                    print_r($error);
+                    die('Error');
+                }
+                $easy_cliente_id = $easy_cliente->registro_id;
+
+                $registro_telegram['descripcion'] = $easy_cliente_id."-".$chatId;
+                $registro_telegram['id_telegram_message'] = $chatId;
+                $registro_telegram['easy_cliente_id'] = $easy_cliente_id;
+                $easy_telegram = (new easy_telegram($link))->alta_registro(registro: $registro_telegram);
+                if(errores::$error){
+                    $error = (new errores())->error(mensaje: 'Error al insertar registro telegram',data:  $easy_telegram);
+                    print_r($error);
+                    die('Error');
+                }
             }
 
             $dia = $respuesta->queryResult->parameters->fecha_cita->day;
@@ -257,11 +281,11 @@ function acciones_bd($respuesta, $link, $chatId){
                 die('Error');
             }
 
-            $registro_cita['descripcion'] = $fecha.'-'.$easy_cliente->registro_id.'-'.
+            $registro_cita['descripcion'] = $fecha.'-'.$easy_cliente_id.'-'.
                 $horarios->registros[0]['easy_horario_id'];
             $registro_cita['fecha_cita'] = $fecha;
             $registro_cita['easy_horario_id'] = $horarios->registros[0]['easy_horario_id'];
-            $registro_cita['easy_cliente_id'] = $easy_cliente->registro_id;
+            $registro_cita['easy_cliente_id'] = $easy_cliente_id;
             $easy_cita = (new easy_cita($link))->alta_registro(registro: $registro_cita);
             if(errores::$error){
                 $error = (new errores())->error(mensaje: 'Error al insertar registro cita',data:  $easy_cita);
@@ -277,26 +301,6 @@ function acciones_bd($respuesta, $link, $chatId){
                 $error = (new errores())->error(mensaje: 'Error al insertar registro etapa_cita',data:  $easy_etapa_cita);
                 print_r($error);
                 die('Error');
-            }
-
-            $filtro_tel['easy_telegram.descripcion'] = $chatId;
-            $easy_telegram = (new easy_telegram($link))->filtro_and(filtro: $filtro_tel);
-            if(errores::$error) {
-                $error = (new errores())->error(mensaje: 'Error obtener registros', data: $easy_telegram);
-                print_r($error);
-                die('Error');
-            }
-
-            if($easy_telegram->n_registros < 1){
-                $registro_telegram['descripcion'] = $easy_cliente->registro_id."-".$chatId;
-                $registro_telegram['id_telegram_message'] = $chatId;
-                $registro_telegram['easy_cliente_id'] = $easy_cliente->registro_id;
-                $easy_telegram = (new easy_telegram($link))->alta_registro(registro: $registro_telegram);
-                if(errores::$error){
-                    $error = (new errores())->error(mensaje: 'Error al insertar registro telegram',data:  $easy_telegram);
-                    print_r($error);
-                    die('Error');
-                }
             }
 
             return "Se inserto cita con existo";
@@ -602,6 +606,93 @@ function acciones_bd($respuesta, $link, $chatId){
         }
 
         return "No tiene citas activas";
+    }
+
+    if($respuesta->queryResult->intent->displayName === "confirmar.edit") {
+        $respuesta_confir = $respuesta->queryResult->parameters->respuesta_confir_edit;
+
+        $respuesta_confir = strtolower($respuesta_confir);
+        if($respuesta_confir === 'si'){
+            /*$session = (new adm_session($link))->carga_data_session();
+            if(errores::$error){
+                $error = (new errores())->error(mensaje: 'Error al asignar session',data: $session);
+                print_r($error);
+                die('Error');
+
+            }
+            $_SESSION['activa'] = 1;
+            $_SESSION['grupo_id'] = '2';
+            $_SESSION['usuario_id'] ='2';
+
+
+            $hora_inicio = $respuesta->queryResult->parameters->hora_inicio->hours;
+            $min_inicio = $respuesta->queryResult->parameters->hora_inicio->minutes;
+            $seg_inicio = $respuesta->queryResult->parameters->hora_inicio->seconds;
+            $horario_inicio = $hora_inicio.':'.$min_inicio.':'.$seg_inicio;
+            $horario_inicio = date_create($horario_inicio);
+            $horario_inicio = date_format($horario_inicio,"H:i:s");
+
+            $hora_fin = $respuesta->queryResult->parameters->hora_fin->hours;
+            $min_fin = $respuesta->queryResult->parameters->hora_fin->minutes;
+            $seg_fin = $respuesta->queryResult->parameters->hora_fin->seconds;
+            $horario_fin = $hora_fin.':'.$min_fin.':'.$seg_fin;
+            $horario_fin = date_create($horario_fin);
+            $horario_fin =date_format($horario_fin,"H:i:s");
+
+            $filtro_horarios_cita['easy_dia_semana.descripcion'] = $dia_semana;
+            $filtro_horarios_cita['easy_horario.hora_inicio'] = $horario_inicio;
+            $filtro_horarios_cita['easy_horario.hora_fin'] = $horario_fin;
+            $horarios = (new easy_horario($link))->filtro_and(filtro: $filtro_horarios_cita);
+            if(errores::$error){
+                $error = (new errores())->error(mensaje: 'Error obtener registros',data:  $horarios);
+                print_r($error);
+                die('Error');
+            }
+
+            $registro_cita['descripcion'] = $fecha.'-'.$easy_cliente->registro_id.'-'.
+                $horarios->registros[0]['easy_horario_id'];
+            $registro_cita['fecha_cita'] = $fecha;
+            $registro_cita['easy_horario_id'] = $horarios->registros[0]['easy_horario_id'];
+            $registro_cita['easy_cliente_id'] = $easy_cliente->registro_id;
+            $easy_cita = (new easy_cita($link))->alta_registro(registro: $registro_cita);
+            if(errores::$error){
+                $error = (new errores())->error(mensaje: 'Error al insertar registro cita',data:  $easy_cita);
+                print_r($error);
+                die('Error');
+            }
+
+            $registro_etapa_cita['descripcion'] = $easy_cita->registro_id."-1";
+            $registro_etapa_cita['easy_status_cita_id'] = '1';
+            $registro_etapa_cita['easy_cita_id'] = $easy_cita->registro_id;
+            $easy_etapa_cita = (new easy_etapa_cita($link))->alta_registro(registro: $registro_etapa_cita);
+            if(errores::$error){
+                $error = (new errores())->error(mensaje: 'Error al insertar registro etapa_cita',data:  $easy_etapa_cita);
+                print_r($error);
+                die('Error');
+            }
+
+            $filtro_tel['easy_telegram.descripcion'] = $chatId;
+            $easy_telegram = (new easy_telegram($link))->filtro_and(filtro: $filtro_tel);
+            if(errores::$error) {
+                $error = (new errores())->error(mensaje: 'Error obtener registros', data: $easy_telegram);
+                print_r($error);
+                die('Error');
+            }
+
+            if($easy_telegram->n_registros < 1){
+                $registro_telegram['descripcion'] = $easy_cliente->registro_id."-".$chatId;
+                $registro_telegram['id_telegram_message'] = $chatId;
+                $registro_telegram['easy_cliente_id'] = $easy_cliente->registro_id;
+                $easy_telegram = (new easy_telegram($link))->alta_registro(registro: $registro_telegram);
+                if(errores::$error){
+                    $error = (new errores())->error(mensaje: 'Error al insertar registro telegram',data:  $easy_telegram);
+                    print_r($error);
+                    die('Error');
+                }
+            }*/
+
+            return "Se inserto cita con existo";
+        }
     }
 
     /*$filtro['easy_telegram.id_telegram_message'] = '';
