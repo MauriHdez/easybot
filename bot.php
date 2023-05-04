@@ -27,10 +27,10 @@ $update = json_decode($input, TRUE);
 $chatId = $update['message']['chat']['id'];
 $message = $update['message']['text'];
 
-/*
+
 $chatId = '5655914615';
 $message = 'Si';
-*/
+
 
 switch($message) {
     case '/start':
@@ -412,7 +412,7 @@ function acciones_bd($respuesta, $link, $chatId){
             }
 
             $respuesta_si = $respuesta->queryResult->parameters->si_confirma;
-print_r($respuesta_si);exit;
+
             $respuesta_si = strtolower($respuesta_si);
             foreach ($citas_fin as $cita_fin){
                 if((int)$cita_fin['contador'] === (int)$respuesta->queryResult->parameters->contador_cancel and
