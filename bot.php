@@ -27,10 +27,9 @@ $update = json_decode($input, TRUE);
 $chatId = $update['message']['chat']['id'];
 $message = $update['message']['text'];
 
-/*
+
 $chatId = '5655914615';
-$message = 'Hola';
-*/
+$message = 'cuando es mi cita?';
 
 switch($message) {
     case '/start':
@@ -477,8 +476,8 @@ function acciones_bd($respuesta, $link, $chatId){
 
         if($easy_telegram->n_registros > 0) {
             $filtro_citas['easy_cita.easy_cliente_id'] = $easy_telegram->registros[0]['easy_cliente_id'];
-            $filtro_citas['easy_status_cita.descripcion'] = 'agendada';
-            $citas = (new easy_etapa_cita($link))->filtro_and(filtro: $filtro_citas);
+            $citas = (new easy_etapa_cita($link))->filtro_and(filtro: $filtro_citas,order:
+                array('easy_etapa_cita.id'=>'DESC'));
             if(errores::$error) {
                 $error = (new errores())->error(mensaje: 'Error obtener registros', data: $citas);
                 print_r($error);
@@ -489,9 +488,21 @@ function acciones_bd($respuesta, $link, $chatId){
                 return "No tiene citas activas";
             }
 
-            $text_citas = '';
+            $res_disponibles = array();
+            $existe = false;
             foreach ($citas->registros as $cita){
-                $text_citas .= "     - ".$cita['easy_cita_fecha_cita']." a las ".$cita['easy_horario_descripcion']."\n";
+
+                if($cita['easy_status_cita_descripcion'] === 'cancelada' || $cita['easy_status_cita_descripcion'] === 'finalizada'){
+                    $existe = true;
+                }
+
+                if (!$existe){
+                    $res_disponibles[] = $cita;
+                }
+            }
+            $text_citas = 'No tiene citas activas';
+            foreach ($res_disponibles as $res){
+                $text_citas .= "     - " . $res['easy_cita_fecha_cita'] . " a las " . $res['easy_horario_descripcion'] . "\n";
             }
             return $text_citas;
         }
