@@ -27,10 +27,10 @@ $update = json_decode($input, TRUE);
 $chatId = $update['message']['chat']['id'];
 $message = $update['message']['text'];
 
-
+/*
 $chatId = '5655914615';
 $message = 'Si';
-
+*/
 
 switch($message) {
     case '/start':
