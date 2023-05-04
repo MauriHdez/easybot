@@ -540,10 +540,11 @@ function acciones_bd($respuesta, $link, $chatId){
                 $cita['contador'] = $cont;
                 $citas_fin[] = $cita;
             }
-            print_r($citas_fin);exit;
+
             foreach ($citas_fin as $cita_fin){
                 if((int)$cita_fin['contador'] === (int)$respuesta->queryResult->parameters->contador_edit){
-                    $fecha = date_format($cita_fin['easy_cita_fecha_cita'],"Y-m-d");
+                    $date = date_create($cita_fin['easy_cita_fecha_cita']);
+                    $fecha = date_format($date,"Y-m-d");
 
                     $dias = array('DOMINGO','LUNES','MARTES','MIERCOLES','JUEVES','VIERNES','SABADO');
                     $dia_semana = $dias[date('N', strtotime($fecha))];
@@ -594,6 +595,7 @@ function acciones_bd($respuesta, $link, $chatId){
                     foreach ($horarios->registros  as $horario){
                         $text_horarios .= "     - ".$horario['easy_horario_descripcion']."\n";
                     }
+
                     return $text_horarios;
                 }
             }
